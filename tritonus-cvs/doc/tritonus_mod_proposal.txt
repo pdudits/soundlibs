@@ -1,0 +1,92 @@
+Tritonus modularization proposal
+--------------------------------
+
+This document proposes to break up the tritonus.jar file into several
+pieces. The goal of it is to enhance the maintainability of
+Tritonus. For instance, on systems that don't have ALSA, it is now
+possible to just not install tritonus_mixer_alsa and
+tritonus_midi_alsa. It is no longer required to edit the configuration
+files in (formerly) tritonus.jar (and rebuild it). The second goal is
+to ease seperation of parts of Tritonus for use with other
+implementations of JS. We have already done this with the mp3
+decoder. In the future, we will do this for additional converters and
+the entire MIDI implementation. The preferred solution would be to
+have the same packaging into jar files for Tritonus itself and for
+external usage.
+
+- tritonus_core:
+	javax.sound.*
+	org.tritonus.core.TInit		(formerly: org.tritonus.TInit)
+	org.tritonus.core.TMidiConfig	(formerly: org.tritonus.midi.TMidiConfig)
+	org.tritonus.core.TAudioConfig	(formerly: org.tritonus.sampled.TAudioConfig)
+	org.tritonus.core.Service	(formerly: org.tritonus.util.Service)
+
+- tritonus_share.jar:
+	org.tritonus.share.TDebug	(formerly: org.tritonus.TDebug)
+	org.tritonus.share.TNotifier	(formerly: org.tritonus.TNotifier)
+	org.tritonus.share.ArraySet	(formerly: org.tritonus.util.ArraySet)
+	org.tritonus.share.GlobalInfo	(formerly: org.tritonus.util.GlobalInfo)
+	org.tritonus.share.TCircularBuffer	?? (only used by AsyncFilteredAIS)	(formerly: org.tritonus.util.TCircularBuffer)
+	org.tritonus.share.midi.MidiUtils		?? (only used in AlsaMidiChannel)	(formerly: org.tritonus.midi.MidiUtils)
+	org.tritonus.share.midi.TMidiFileFormat	?? (only used by StandardMidiFileReader)	(formerly: org.tritonus.midi.file.TMidiFileFormat)
+	org.tritonus.share.midi.TMidiDevice		(formerly: org.tritonus.midi.device.TSequencer)
+	org.tritonus.share.midi.TSequencer		(formerly: org.tritonus.midi.device.TSequencer)
+	org.tritonus.share.sampled.AudioFileTypes	(formerly: org.tritonus.sampled.AudioFileTypes)
+	org.tritonus.share.sampled.AudioFormats		(formerly: org.tritonus.sampled.AudioFormats)
+	org.tritonus.share.sampled.AudioUtils		(formerly: org.tritonus.sampled.AudioUtils)
+	org.tritonus.share.sampled.Encodings		(formerly: org.tritonus.sampled.Encodings)
+	org.tritonus.share.sampled.FloatSampleBuffer	(formerly: org.tritonus.sampled.FloatSampleBuffer)
+	org.tritonus.share.sampled.TConversionTool	(formerly: org.tritonus.sampled.TConversionTool)
+	org.tritonus.share.sampled.TVolumeUtils ??	(formerly: org.tritonus.sampled.TVolumeUtils)
+	org.tritonus.share.sampled.convert.* (without subdirs)	(formerly: org.tritonus.sampled.convert.*)
+	org.tritonus.share.sampled.mixer.* (without subdirs)	(formerly: org.tritonus.mixer.file.*)
+
+- tritonus_midi_alsa:
+	org.tritonus.midi.device.alsa.*
+	org.tritonus.lowlevel.alsa.ASequencer
+	org.tritonus.lowlevel.alsa.ASequencer0
+
+- tritonus_midi_midishare:
+	org.tritonus.midi.device.midishare.*
+	?? lowlevel classes ?? (grame.midishare.*)
+
+- tritonus_convert_standard:
+	org.tritonus.sampled.convert.standard.*
+
+- tritonus_sampled_file_standard:
+	org.tritonus.sampled.file.standard.*
+
+- tritonus_mp3:
+	org.tritonus.sampled.convert.mp3.*
+	org.tritonus.sampled.file.mp3.*
+	?? low-level classes for encoder ??
+
+- tritonus_gsm:
+	org.tritonus.sampled.convert.gsm.*
+	org.tritonus.sampled.file.gsm.*
+	org.tritonus.lowlevel.gsm.*
+
+- javalayer:
+	javazoom.jl.decoder.*
+
+- tritonus_mixer_alsa:
+	org.tritonus.sampled.mixer.alsa.*
+	org.tritonus.lowlevel.alsa.Alsa
+	org.tritonus.lowlevel.alsa.AlsaCtl
+	org.tritonus.lowlevel.alsa.AlsaPcm
+
+- tritonus_mixer_esd:
+	org.tritonus.sampled.mixer.esd.*
+	org.tritonus.lowlevel.esd.*
+
+Package structure changes:
+- many classes go to core or share (see above)
+- MpegFormatConversionProvider goes to org.tritonus.sampled.convert.mp3
+- PCM2PCMConversionProvider, SmartFormatConversionProvider, AlawFormatConversionProvider and UlawFormatConversionProvider go to org.tritonus.sampled.convert.standard
+- MpegAudioFileReader, MpegEncodings and MpegFileFormatType go to org.tritonus.sampled.file.mp3
+- Aiff*, Au* and Wave* go to org.tritonus.sampled.file.standard
+- org.tritonus.TConfiguration is no longer needed and will be removed.
+
+Notes:
+- javalayer is seperated from tritonus_mp3 for legal reasons.
+

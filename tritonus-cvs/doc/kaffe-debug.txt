@@ -1,0 +1,10 @@
+The following explains how to deploy a debug version of tritonus
+with kaffe.
+
+1. remove the Tritonus/Java Sound components from kaffe's rt.jar.
+
+2. build a debug version of Tritonus:
+> ant clean
+> ant -f build-debug.xml
+
+3. Put the resulting .jars in kaffe's classpath:[modify .kafferc; example]

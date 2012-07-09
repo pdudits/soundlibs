@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+<!-- If a tool complains that project.dtd is not available,
+     run the following command in the top level directory:
+     ant -f build-dtd.xml
+-->
+<!DOCTYPE project SYSTEM "../../project.dtd">
+
+<project name="tritonus_tests" default="compile" basedir=".">
+
+  <target name="init-base">
+    <property name="src.dir" value="src/classes" />
+    <property name="build.dir" value=".build" />
+    <path id="run.classpath.api">
+      <pathelement location="${basedir}"/>
+      <pathelement location="${build.dir}"/>
+      <pathelement path="${java.class.path}"/>
+    </path>
+  </target>
+
+
+  <target name="init-tritonus"
+		  depends="init-base">
+    <path id="compile.classpath">
+     <fileset dir="${basedir}/../../dist">
+        <include name="*.jar"/>
+      </fileset>
+      <pathelement path="${java.class.path}"/>
+    </path>
+    <path id="run.classpath"><!-- ~.tritonus -->
+      <pathelement location="${basedir}"/>
+      <pathelement location="${build.dir}"/>
+      <pathelement path="${java.class.path}"/>
+    </path>
+  </target>
+
+
+  <target name="prepare" depends="init-base">
+    <mkdir dir="${build.dir}" />
+  </target>
+
+
+  <target name="compile" depends="compile-api, compile-tritonus"/>
+
+
+  <target name="compile-api" depends="prepare">
+    <javac srcdir="${src.dir}"
+		   destdir="${build.dir}"
+		   source="1.5"
+		   debug="on">
+	  <compilerarg value="-Xlint:unchecked"/>
+	  <exclude name="org/tritonus/test/*.java"/>
+	  <exclude name="org/tritonus/test/tritonus/"/>
+	  <exclude name="org/tritonus/test/sequencer/"/>
+	  <exclude name="org/tritonus/test/alsa/"/>
+    </javac>
+  </target>
+
+
+  <target name="compile-tritonus" depends="prepare, init-tritonus">
+    <javac srcdir="${src.dir}"
+		   destdir="${build.dir}"
+		   source="1.5"
+		   debug="on">
+	  <exclude name="org/tritonus/test/api/"/>
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+
+  <target name="test"
+	  depends="test-api,test-tritonus">
+  </target>
+
+
+  <target name="test-api"
+	  depends="test-midi,test-sampled">
+  </target>
+
+
+  <target name="test-midi"
+	  depends="test-midi-message,test-midi-device,test-midi-sequencer, test-midi-synthesizer,test-midi-misc,test-midi-midisystem,test-midi-spi">
+  </target>
+
+
+  <target name="test-midi-message"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath.api"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.api.midi.message.MidiMessageTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-midi-device"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath.api"/>
+      <sysproperty key="tritonus.TraceAllExceptions" value="true"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.api.midi.device.MidiDeviceTestCase" />
+    </junit>
+  </target>
+
+  <!-- TODO: change package of test cases -->
+  <target name="test-midi-sequencer"
+		  depends="compile-api">
+	  <junit fork="no" printsummary="yes">
+		  <classpath refid="run.classpath"/>
+		  <formatter type="plain" />
+		  <test name="org.tritonus.test.sequencer.IllegalStateTestCase" />
+		  <test name="org.tritonus.test.sequencer.SyncModesTestCase" />
+		  <test name="org.tritonus.test.sequencer.SequenceLengthTestCase" />
+		  <test name="org.tritonus.test.sequencer.TempoTestCase" />
+	  </junit>
+  </target>
+
+  <target name="test-midi-synthesizer"
+		  depends="compile-api">
+	  <junit fork="no" printsummary="yes">
+		  <classpath refid="run.classpath"/>
+		  <formatter type="plain" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.IllegalStateTestCase" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.GetMaxPolyphonyTestCase" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.GetLatencyTestCase" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.GetChannelsTestCase" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.GetVoiceStatusTestCase" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.GetDefaultSoundbankTestCase" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.WrongSoundbankTestCase" />
+		  <test name="org.tritonus.test.api.midi.synthesizer.MidiChannelTestCase" />
+	  </junit>
+  </target>
+  
+  <target name="test-midi-midisystem"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath.api"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.api.midi.midisystem.MidiSystemTestCase"/>
+    </junit>
+  </target>
+
+
+  <target name="test-midi-misc"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath.api"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.api.midi.misc.MidiFileFormatTestCase"/>
+    </junit>
+  </target>
+
+
+  <target name="test-midi-spi"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath.api"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.api.midi.spi.MidiDeviceProviderTestCase" />
+      <!--test name="org.tritonus.test.api.midi.spi.MidiFileWriterTestCase" /-->
+    </junit>
+  </target>
+
+
+  <!-- TODO: add to depends: test-audiofilereader -->
+  <target name="test-sampled"
+	  depends="test-sampled-line,test-sampled-misc">
+  </target>
+
+
+  <target name="test-sampled-line"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath.api"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.api.sampled.line.DataLineInfoTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-sampled-misc"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath.api"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.api.sampled.misc.AudioFormatTestCase"/>
+      <test name="org.tritonus.test.api.sampled.misc.EncodingTestCase"/>
+      <test name="org.tritonus.test.api.sampled.misc.AudioFileFormatTestCase"/>
+      <test name="org.tritonus.test.api.sampled.misc.TypeTestCase"/>
+    </junit>
+  </target>
+
+
+  <target name="test-audiofilereader"
+	  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <!--sysproperty key="tritonus.TraceAudioFileReader" value="true"/-->
+      <formatter type="plain" />
+      <test name="org.tritonus.test.AiffAudioFileReaderTestCase" />
+      <test name="org.tritonus.test.Aiff12bitAudioFileReaderTestCase" />
+      <test name="org.tritonus.test.AuAudioFileReaderTestCase" />
+      <test name="org.tritonus.test.AuZeroDataLengthAudioFileReaderTestCase" />
+      <test name="org.tritonus.test.WaveAudioFileReaderTestCase" />
+      <test name="org.tritonus.test.GSMAudioFileReaderTestCase" />
+      <test name="org.tritonus.test.VorbisAudioFileReaderTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-tritonus"
+		  depends="test-dataoutputstream,test-audiooutputstream, test-audiosystemshadow">
+  </target>
+
+
+  <target name="test-dataoutputstream"
+	  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.tritonus.share.sampled.file.TSeekableDataOutputStreamTestCase"/>
+      <test name="org.tritonus.test.tritonus.share.sampled.file.TNonSeekableDataOutputStreamTestCase"/>
+    </junit>
+  </target>
+
+
+  <target name="test-audiooutputstream"
+	  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.tritonus.sampled.file.AuAudioOutputStreamTestCase"/>
+      <test name="org.tritonus.test.tritonus.sampled.file.WaveAudioOutputStreamTestCase"/>
+    </junit>
+  </target>
+
+
+  <target name="test-audiosystemshadow"
+	  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.tritonus.share.sampled.AudioSystemShadowTestCase"/>
+    </junit>
+  </target>
+
+
+  <target name="test-converter"
+	  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.AlawFormatConversionProviderTestCase" />
+      <test name="org.tritonus.test.UlawFormatConversionProviderTestCase" />
+      <test name="org.tritonus.test.PCM2PCMConversionProviderTestCase" />
+      <test name="org.tritonus.test.SampleRateConversionProviderTestCase" />
+      <test name="org.tritonus.test.ImaAdpcmFormatConversionProviderTestCase" />
+      <test name="org.tritonus.test.GSMFormatConversionProviderTestCase" />
+      <test name="org.tritonus.test.JorbisFormatConversionProviderTestCase" />
+      <test name="org.tritonus.test.VorbisFormatConversionProviderTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-control"
+		  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.ControlTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-circularbuffer"
+		  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.TCircularBufferTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-encodings"
+		  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.EncodingsTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-silence"
+		  depends="compile-tritonus">
+
+    <junit fork="no" printsummary="yes">
+      <classpath>
+	<fileset dir="${basedir}/../../dist">
+	  <include name="tritonus_jorbis.jar"/>
+	  <include name="tritonus_share.jar"/>
+	  <include name="tritonus_aos.jar"/>
+	</fileset>
+      </classpath>
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.VorbisSilenceTestCase" />
+    </junit>
+
+    <junit fork="no" printsummary="yes">
+      <classpath>
+	<fileset dir="${basedir}/../../dist">
+	  <include name="tritonus_vorbis.jar"/>
+	  <include name="tritonus_share.jar"/>
+	  <include name="tritonus_aos.jar"/>
+	</fileset>
+      </classpath>
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.VorbisSilenceTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-truncate"
+		  depends="compile-tritonus">
+
+    <junit fork="no" printsummary="yes"
+		   haltonfailure="true" haltonerror="true">
+      <classpath>
+		<fileset dir="${basedir}/../../dist">
+		  <include name="tritonus_jorbis.jar"/>
+		  <include name="tritonus_share.jar"/>
+		  <include name="tritonus_aos.jar"/>
+		</fileset>
+      </classpath>
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.VorbisTruncateTestCase" />
+    </junit>
+
+    <junit fork="no" printsummary="yes">
+      <classpath>
+		<fileset dir="${basedir}/../../dist">
+		  <include name="tritonus_vorbis.jar"/>
+		  <include name="tritonus_share.jar"/>
+		  <include name="tritonus_aos.jar"/>
+		</fileset>
+      </classpath>
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.VorbisTruncateTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-javasequencer"
+		  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.sequencer.JavaSequencerClockTestCase" />
+    </junit>
+  </target>
+
+
+  <target name="test-taudioformat"
+		  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.TAudioFormatTestCase" />
+      <test name="org.tritonus.test.TAudioFileFormatTestCase" />
+    </junit>
+  </target>
+
+  <target name="test-tdirectsynthesizer"
+		  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.tritonus.share.midi.TDirectSynthesizerTestCase" />
+    </junit>
+  </target>
+
+  <target name="test-tmidichannel"
+		  depends="compile-tritonus">
+	  <junit fork="no" printsummary="yes">
+		  <classpath refid="run.classpath"/>
+		  <formatter type="plain" />
+		  <test name="org.tritonus.test.tritonus.share.midi.TMidiChannelTestCase" />
+	  </junit>
+  </target>
+
+  <target name="test-audioinputstream"
+		  depends="compile-api">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.AudioInputStreamTestCase" />
+    </junit>
+  </target>
+
+  <target name="test-pogg"
+		  depends="compile-tritonus">
+    <junit fork="no" printsummary="yes">
+      <classpath refid="run.classpath"/>
+      <formatter type="plain" />
+      <test name="org.tritonus.test.tritonus.lowlevel.pogg.BufferTestCase"/>
+      <test name="org.tritonus.test.tritonus.lowlevel.pogg.PacketTestCase"/>
+      <test name="org.tritonus.test.tritonus.lowlevel.pogg.PageTestCase"/>
+      <test name="org.tritonus.test.tritonus.lowlevel.pogg.FramingTestCase"/>
+    </junit>
+  </target>
+
+
+
+  <target name="clean" depends="init-base">
+    <delete dir="${build.dir}"/>
+  </target>
+</project>

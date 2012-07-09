@@ -1,0 +1,235 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl
+dnl This script does not work with autoconf 2.52 (bug in autoconf).
+dnl
+
+AC_INIT(src/classes/javax/sound/sampled/AudioSystem.java)
+AC_CONFIG_AUX_DIR(util)
+
+JAR_INDEX=
+
+# JDK Version Check automatic checker.
+# This is Sun JVM specific when looking the 
+# release number at least
+# Peter Pilgrim Wed Jan 12 00:20:42 GMT 2000
+
+AC_MSG_CHECKING(JDK version)
+
+# Temporary directory
+: ${TMPDIR:=/tmp}
+# Your Java VM might be JIKES
+: ${JAVA:=java}
+
+TEMPFILE=${TMPDIR}/javaver.lst
+/bin/rm -f $TEMPFILE
+${JAVA} -version 2> $TEMPFILE
+JdkVersion=`cat $TEMPFILE | head -n 1 | cut -d" " -f3 | sed 's!"!!g'`
+JAVA_VERSION=${JdkVersion}
+
+AC_MSG_RESULT($JAVA_VERSION)
+
+JDK_OK=yes
+case $JAVA_VERSION in
+    1.6* )
+	;;
+    1.5* )
+	;;
+    1.4* )
+	JDK_OK=no
+	;;
+    1.3* )
+	#bug in jar -i ...
+	#JAR_INDEX=jar_index
+	JDK_OK=no
+	;;
+    1.2* )
+	JDK_OK=no
+	;;
+    1.1* )
+	JDK_OK=no
+	;;
+    1.0* )
+	JDK_OK=no
+	;;
+    *)
+	echo "No JDK Version detected. "
+	echo "Please make sure a J2SDK is in your CLASSPATH."
+	echo "For more information read the file INSTALL"
+	JDK_OK=no
+	;;
+esac
+# fini
+
+# We only support 1.5 or higher now
+if test $JDK_OK != "yes" ; then
+	AC_MSG_ERROR(Need JDK 1.5 or higher!)
+	exit 1
+fi
+
+
+# need to convert targets for 1.1? (legacy)
+AC_SUBST(JAVAH)
+AC_SUBST(CONVERTTARGETS)
+JAVAH='javah -force -classpath $(OBJDIR)'
+CONVERTTARGETS=
+
+dnl case "$JAVA_VERSION" in
+dnl 1.1*) JAVAH='javah -classpath $(OBJDIR):$(CLASSPATH)'; CONVERTTARGETS=convert;;
+dnl *) JAVAH='javah -force -classpath $(OBJDIR)'; CONVERTTARGETS= ;;
+dnl esac
+
+
+AC_SUBST(OSNAME)
+AC_SUBST(ARCHNAME)
+AC_CANONICAL_HOST
+dnl AC_MSG_RESULT(cpu: ${host_cpu})
+dnl AC_MSG_RESULT(vendor: ${host_vendor})
+dnl AC_MSG_RESULT(os: ${host_os})
+
+case "$host_cpu" in
+i386 | i486 | i586 | i686) ARCHNAME=i386;;
+esac
+
+case "$host_os" in
+linux*) case "$JAVA_VERSION" in
+	1.1.7*) OSNAME=genunix;;
+	*) OSNAME=linux;;
+	esac;;
+cygwin) OSNAME=win32;;
+esac
+
+AC_PREFIX_PROGRAM(javac)
+
+dnl check for jikes. Note: cannot use variable "JAVAC" as it is already used
+dnl in the check for prefix above
+AC_CHECK_PROG(COMPILER, jikes, jikes, javac)
+
+# set installation directory of plug-ins (extension directory)
+REL_JAVAEXTPATH=jre/lib/ext
+AC_SUBST(REL_JAVAEXTPATH)
+
+# set installation directory for native libraries
+REL_JAVAEXTLIBPATH=jre/lib/$ARCHNAME
+AC_SUBST(REL_JAVAEXTLIBPATH)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_DISABLE_STATIC
+AC_PROG_LIBTOOL
+
+AC_SUBST(SUBDIRS)
+dnl Checks for libraries.
+SUBDIRS=
+AC_CHECK_LIB(asound, snd_seq_open,[SUBDIRS="$SUBDIRS src/lib/alsa"; AC_MSG_RESULT(Information: will build stuff for ALSA sequencer)],[AC_MSG_RESULT(Information: will not build stuff for ALSA sequencer)],)
+AC_CHECK_LIB(esd,esd_open_sound,[SUBDIRS="$SUBDIRS src/lib/esd"; AC_MSG_RESULT(Information: will build stuff for Enlightened Sound Daemon)],[AC_MSG_RESULT(Information: will not build stuff for Enlightened Sound Daemon)])
+AC_CHECK_LIB(mp3lame,lame_init_params,[SUBDIRS="$SUBDIRS src/lib/lame"; AC_MSG_RESULT(Information: will build stuff for LAME mp3 encoder)],[AC_MSG_RESULT(Information: will not build stuff for LAME mp3 encoder)])
+AC_CHECK_HEADER(linux/cdrom.h,[SUBDIRS="$SUBDIRS src/lib/cooked_ioctl"; AC_MSG_RESULT(Information: will build stuff for 'cooked ioctl' cdda)],[AC_MSG_RESULT(Information: will not build stuff for 'cooked ioctl' cdda)])
+AC_CHECK_HEADER(cdda_interface.h,[SUBDIRS="$SUBDIRS src/lib/cdparanoia"; AC_MSG_RESULT(Information: will build stuff for cdparanoia)],[AC_MSG_RESULT(Information: will not build stuff for cdparanoia)])
+AC_CHECK_HEADER(ogg/ogg.h,[SUBDIRS="$SUBDIRS src/lib/vorbis"; AC_MSG_RESULT(Information: will build stuff for vorbis)],[AC_MSG_RESULT(Information: will not build stuff for vorbis)])
+AC_CHECK_HEADER(fluidsynth.h,[SUBDIRS="$SUBDIRS src/lib/fluidsynth"; AC_MSG_RESULT(Information: will build stuff for fluidsynth)],[AC_MSG_RESULT(Information: will NOT build stuff for fluidsynth)])
+
+dnl AC_MSG_RESULT(hallo x${SUBDIRS}x)
+
+dnl check for javalayer decoder code
+AC_MSG_CHECKING(installed javalayer MP3 decoder)
+JL_LIB=
+JL_DIR=
+JL_TESTFILE=Decoder.java
+JL_TESTFILEPATH=jl/decoder
+JL_TESTPATH="javalayer ../javalayer javazoom ../javazoom"
+for JL_TESTDIR in $JL_TESTPATH; do
+	dnl use PATH in order
+	if test ".$JL_DIR" = "." && test -f "$JL_TESTDIR/$JL_TESTFILEPATH/$JL_TESTFILE"; then
+		JL_DIR=$JL_TESTDIR
+	fi
+done
+if test ".$JL_DIR" = "." ; then
+	AC_MSG_RESULT(no)
+	dnl AC_MSG_WARN(** You haven't downloaded the javalayer MP3 decoder.   **)
+	dnl AC_MSG_WARN(** MP3 decoding will not be possible.                  **)
+	dnl AC_MSG_WARN(** Download the mp3 decoder with the following         **)
+	dnl AC_MSG_WARN(** commands:                                           **)
+	dnl AC_MSG_WARN(** SERVER=anonymous@cvs.javalayer.sourceforge.net      **)
+	dnl AC_MSG_WARN(** SERVERPATH=/cvsroot/javalayer                       **)
+	dnl AC_MSG_WARN(** cvs -d:pserver:\$SERVER:\$SERVERPATH login            **)
+	dnl AC_MSG_WARN(** (press ENTER key for password)                      **)
+	dnl AC_MSG_WARN(** cvs -z3 -d:pserver:\$SERVER:\$SERVERPATH co javalayer **)
+	dnl better to exit here...
+	dnl AC_MSG_ERROR(Exit.)
+else
+	AC_MSG_RESULT(yes)
+	JL_LIB=javalayer.jar
+	dnl HACK: create a symbolic link for java layer code
+	(cd $JL_DIR ; rm -f javazoom ; ln -sf `pwd` javazoom)
+fi
+AC_SUBST(JL_LIB)
+AC_SUBST(JL_DIR)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl AC_C_CONST
+
+dnl $$fb added
+SRC_ABSOLUTE_PATH=`pwd`
+AC_SUBST(SRC_ABSOLUTE_PATH)
+RM_F="rm -f"
+AC_SUBST(RM_F)
+MKDIR_P="mkdir -p"
+AC_SUBST(MKDIR_P)
+BUILD_DIR="build"
+DIST_DIR="dist"
+AC_SUBST(BUILD_DIR)
+AC_SUBST(DIST_DIR)
+AC_SUBST(JAR_INDEX)
+dnl set default for classpath. This may be changed below if Jikes is used
+DEF_CLASSPATH=${BUILD_DIR}
+AC_SUBST(DEF_CLASSPATH)
+
+
+
+dnl $$fb added
+dnl -------------- Features ---------
+dnl Compiler user option
+WARN_MSG=
+AC_MSG_CHECKING(use of jikes compiler)
+AC_ARG_WITH(jikes, 
+  [  --without-jikes            Do not use jikes compiler]
+  [                           [default: use jikes if available]],
+  CONFIG_JIKES="${withval}", CONFIG_JIKES="default")
+if test "${CONFIG_JIKES}" = "default" ; then
+	if test "${COMPILER}" = "jikes" ; then
+		CONFIG_JIKES="yes"
+	else
+		CONFIG_JIKES="no"
+	fi
+elif test "${CONFIG_JIKES}" = "yes" && test "${COMPILER}" != "jikes" ; then
+	WARN_MSG="you have selected jikes, but it is not available on your system !"
+	CONFIG_JIKES="no"
+elif test "${CONFIG_JIKES}" = "no" ; then
+	COMPILER=javac
+fi
+AC_MSG_RESULT(${CONFIG_JIKES})
+if test "x${WARN_MSG}" != "x" ; then
+	AC_MSG_WARN(${WARN_MSG})
+fi
+if test "${CONFIG_JIKES}" = "yes" ; then
+	DEF_CLASSPATH=${DEF_CLASSPATH}:${prefix}/jre/lib/rt.jar
+fi
+
+AC_OUTPUT(Makefile
+	src/lib/common/Makefile
+	src/lib/alsa/Makefile
+	src/lib/cdparanoia/Makefile
+	src/lib/cooked_ioctl/Makefile
+	src/lib/esd/Makefile
+	src/lib/lame/Makefile
+	src/lib/vorbis/Makefile
+	src/lib/pvorbis/Makefile
+	src/lib/fluidsynth/Makefile
+	doc/Makefile
+	test/Makefile)

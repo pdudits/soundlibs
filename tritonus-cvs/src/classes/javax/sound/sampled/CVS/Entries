@@ -1,0 +1,23 @@
+/AudioFileFormat.java/1.1/Sun Jan 16 08:25:03 2005//
+/AudioFormat.java/1.1/Sun Jan 16 08:25:03 2005//
+/AudioInputStream.java/1.1/Sun Jan 16 08:25:03 2005//
+/AudioPermission.java/1.1/Sun Jan 16 08:25:03 2005//
+/AudioSystem.java/1.4/Mon Feb 13 19:45:28 2006//
+/BooleanControl.java/1.1/Sun Jan 16 08:25:03 2005//
+/Clip.java/1.1/Sun Jan 16 08:25:03 2005//
+/CompoundControl.java/1.1/Sun Jan 16 08:25:03 2005//
+/Control.java/1.1/Sun Jan 16 08:25:03 2005//
+/DataLine.java/1.1/Sun Jan 16 08:25:03 2005//
+/EnumControl.java/1.1/Sun Jan 16 08:25:03 2005//
+/FloatControl.java/1.2/Mon Feb 13 19:45:28 2006//
+/Line.java/1.1/Sun Jan 16 08:25:03 2005//
+/LineEvent.java/1.1/Sun Jan 16 08:25:03 2005//
+/LineListener.java/1.1/Sun Jan 16 08:25:03 2005//
+/LineUnavailableException.java/1.1/Sun Jan 16 08:25:03 2005//
+/Mixer.java/1.1/Sun Jan 16 08:25:03 2005//
+/Port.java/1.1/Sun Jan 16 08:25:03 2005//
+/ReverbType.java/1.1/Sun Jan 16 08:25:03 2005//
+/SourceDataLine.java/1.1/Sun Jan 16 08:25:03 2005//
+/TargetDataLine.java/1.1/Sun Jan 16 08:25:03 2005//
+/UnsupportedAudioFileException.java/1.1/Sun Jan 16 08:25:03 2005//
+D/spi////

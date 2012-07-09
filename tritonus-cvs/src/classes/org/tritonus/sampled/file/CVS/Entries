@@ -1,0 +1,18 @@
+/AiffAudioFileReader.java/1.3/Sun Jun 03 19:44:26 2007//
+/AiffAudioFileWriter.java/1.3/Mon Feb 13 13:25:24 2006//
+/AiffAudioOutputStream.java/1.2/Sun Jun 03 19:46:23 2007//
+/AiffTool.java/1.3/Sun Jun 03 22:10:00 2007//
+/AuAudioFileReader.java/1.5/Sun Jun 03 19:44:42 2007//
+/AuAudioFileWriter.java/1.3/Mon Feb 13 13:25:24 2006//
+/AuAudioOutputStream.java/1.3/Sun Jun 03 19:49:29 2007//
+/AuTool.java/1.3/Sun Jun 03 22:10:00 2007//
+/WaveAudioFileReader.java/1.3/Mon Feb 13 19:45:31 2006//
+/WaveAudioFileWriter.java/1.3/Mon Feb 13 13:25:24 2006//
+/WaveAudioOutputStream.java/1.4/Mon Mar 16 20:49:00 2009//
+/WaveTool.java/1.3/Sun Jun 03 22:10:00 2007//
+/package.html/1.1/Sun Jan 16 12:45:51 2005//
+D/gsm////
+D/jorbis////
+D/mpeg////
+D/pvorbis////
+D/vorbis////

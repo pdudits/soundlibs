@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!-- If a tool complains that project.dtd is not available,
+     run the following command:
+     ant -f build-dtd.xml
+-->
+<!DOCTYPE project SYSTEM "project.dtd" [
+<!ENTITY common SYSTEM "build-common.xml">
+]>
+
+<project name="tritonus" default="dist" basedir=".">
+
+  <taskdef name="ajc"
+	   classname="org.aspectj.tools.ant.taskdefs.Ajc" >
+  </taskdef>
+  <property name="usejavac" value="false" />
+
+  &common;
+
+
+  <target name="compile" depends="prepare">
+    <ajc srcdir="${src}"
+	 destdir="${build}"
+	 debug="on"
+	 usejavac="${usejavac}" >
+      <include name="javax/sound/" />
+      <include name="org/tritonus/core/" />
+      <include name="org/tritonus/lowlevel/" />
+      <include name="org/tritonus/share/" />
+      <exclude name="org/tritonus/share/sampled/AudioSystemShadow.java" />
+      <include name="org/tritonus/debug/AJDebug.java" />
+      <include name="org/tritonus/debug/Utils.java" />
+      <include name="org/tritonus/midi/" />
+      <exclude name="org/tritonus/midi/device/midishare/" />
+      <include name="org/tritonus/sampled/" />
+      <exclude name="org/tritonus/sampled/convert/javalayer/" />
+      <exclude name="org/tritonus/sampled/convert/vorbis/" />
+      <exclude name="org/tritonus/sampled/file/vorbis/" />
+      <classpath>
+	<pathelement path="${classpath}"/>
+	<pathelement location="build"/>
+      </classpath>
+    </ajc>
+
+<!--
+    <javac srcdir="${src.classes}"
+	   debug="on"
+	   destdir="${build}"
+	   includes="org/tritonus/lowlevel/dsp/" />
+-->
+  </target>
+
+
+  <target name="compile-javalayer-dependent"
+	  depends="prepare"
+	  if="javalayer-present">
+    <ajc srcdir="${src}"
+	 destdir="${build}"
+	 debug="on"
+	 usejavac="${usejavac}" >
+      <include name="org/tritonus/sampled/convert/javalayer/" />
+      <classpath>
+	<pathelement path="${classpath}"/>
+	<pathelement location="build"/>
+      </classpath>
+    </ajc>
+  </target>
+
+  <target name="compile-jorbis-dependent"
+	  depends="prepare"
+	  if="jorbis-present">
+    <ajc srcdir="${src}"
+	 destdir="${build}"
+	 debug="on"
+	 usejavac="${usejavac}" >
+      <include name="org/tritonus/sampled/convert/vorbis/" />
+      <include name="org/tritonus/sampled/file/vorbis/" />
+      <include name="org/tritonus/debug/AJDebugVorbis.java" />
+      <classpath>
+	<pathelement path="${classpath}"/>
+	<pathelement location="build"/>
+      </classpath>
+    </ajc>
+  </target>
+
+  <target name="compile-midishare-dependent"
+	  depends="prepare"
+	  if="midishare-present">
+    <javac srcdir="${src}"
+	   destdir="${build}"
+	   includes="org/tritonus/midi/device/midishare/" />
+  </target>
+
+
+</project>

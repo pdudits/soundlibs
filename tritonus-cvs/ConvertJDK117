@@ -1,0 +1,298 @@
+#!/bin/bash
+
+# 
+# Bourne Shell Script
+# 
+# Description:
+#	Convert Tritonus 1.81 java source code 
+#	so that it work with Java Development Kit 1.1.7 and
+#	the Collections API for JDK 1.1
+#
+# Author:
+#	Peter Pilgrim
+#	Wed Jan 05 21:15:56 GMT 2000
+#
+
+# ********************************************************************************
+PrintUsage()
+# ********************************************************************************
+{
+    cat << EOF
+USAGE: $myname	
+		[ --classpath (-cp) <CLASSPATH> ]
+		[ --dryrun (-dr) ] [ --force ]
+		[ --verbose (-v) | --noverbose (+v) ] 
+		[ --help (-h) | --usage (-u) ] 
+
+OPTIONS:
+    '--dryrun'		  dry run and test the configuration, do not configure the
+    '-dr'		  the run-time stub file.
+    '--verbose'		  generates verbose output also.
+    '-v'
+    '--help'		  produces this brief text and exits gracefully.
+    '-h' '-u'
+
+DESCRIPTION:
+
+This program '$myname' converts Tritonus 1.81 
+Java source code so that it compiles with Java Development Kit 1.1.7
+and the Collections API for JDK 1.1 The Collections API for JDK1.1 can
+be found on the Javasoft web pages under the InfoBus product line.
+
+Peter Pilgrim Wed Jan 05 21:18:41 GMT 2000
+EOF
+
+    echo '$RCSfile: ConvertJDK117,v $ $Revision: 1.1.1.1 $ $Author: pfisterer $ $Date: 2000/04/13 19:13:57 $'
+    exit 0
+}
+
+# ********************************************************************************
+BackupFile ()
+# ********************************************************************************
+{
+    # Backup a file by renaming it.
+    ThisFile=$1
+    if [ -f ${ThisFile} ]; then
+	if [ -f ${ThisFile}.bak ]; then
+	    (set $VerboseOpt; ${PrefixCmd} /bin/rm -f ${ThisFile}.bak )
+	fi
+	(set $VerboseOpt; ${PrefixCmd} mv ${ThisFile} ${ThisFile}.bak )
+    fi
+}
+
+# ********************************************************************************
+SysWarn() 
+# ********************************************************************************
+{
+    # Log an message string to the standard out and do NOT exit
+    echo "$myname: *WARNING* : $1" 1>&2
+}
+
+# ********************************************************************************
+SysError() 
+# ********************************************************************************
+{
+    # Log an message string to the standard error and exit
+    echo "$myname: *ERROR* : $1" 1>&2
+    exit 1
+}
+
+# ********************************************************************************
+SignalCatcher() 
+# ********************************************************************************
+{
+    # A generic signal handler for the shell script.
+    echo
+    echo "$myname: Got Signal $1"
+    exit 3
+}
+
+# ********************************************************************************
+CleanUp () 
+# ********************************************************************************
+{
+    echo "$myname:Finished (total:$total, errors:$errors, cmpltd:$cmpltd, ignored:$ignored, counter:$counter )"
+    /bin/rm -f DUMMY_FILE $TempFile1 $TempFile2
+}
+
+
+
+# ********************************************************************************
+# MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN MAIN 
+# ********************************************************************************
+
+myname=`basename $0`
+
+debug=
+verbose=
+silent=
+VerboseOpt="+x"
+PrefixCmd=""
+DryRunFlag=0
+
+cmpltd=0
+errors=0
+total=0
+ignored=0
+counter=0
+
+
+#
+# Interpret the command line arguments (the GNU way!)
+#
+while [ $# -gt 0 ]
+do
+    #
+    # Interpret cli argument
+    #
+    case $1 in
+
+	# **** The standard CLI options begin here ****
+	-silent | -quiet | \
+	--silence | --silenc | --silenc | --silen | --sile | --sil | \
+	--quiet | --quie | --qui | --qu | --q | -q )
+	silent=yes
+	verbose=
+	VerboseOpt="+x"
+	;;
+ 
+	-verbose | --verbose | --verbos | --verbo | --verb | \
+	--ver | --ve | --v | -v ) 
+	verbose=yes
+	VerboseOpt="-x"
+	;;
+
+	--debug | --debu | --deb | -debug | -debu | -deb ) 
+	debug=yes
+        ;;
+
+	--dryrun | --dryru | --dryr | --dry | --dr | -dr | \
+	-dryrun | -dryru | -dryr | -dry | -dr | -dr )
+	PrefixCmd="echo =>"
+	DryRunFlag=1
+	;;
+
+	--help | --hel | --he | --h | -help | -hel | -he | -h | \
+	--usage | --usag | --usa | --us | --u | \
+	-usage | -usag | -usa | -us |  -u )
+	PrintUsage
+	exit 0
+	;;
+
+	--* | -*)
+	SysError "unknown cli option: '$1'. Try '--help' for more info"
+	break;;
+
+	*) break;;
+
+    esac
+    shift
+done
+
+#
+# Trap any signals
+#
+trap 'CleanUp "Cleaning"' 0
+trap 'SignalCatcher "(SIGHUP)"'  1
+trap 'SignalCatcher "(SIGINT)"'  2
+trap 'SignalCatcher "(SIGQUIT)"' 3
+trap 'SignalCatcher "(SIGTERM)"' 15
+
+echo "$myname: converting to JDK 1.1.7 and compatible Collections API"
+JavaSourceFiles=`find . -name "*.java" -print`
+
+# Create a `sed(1)' file to replace
+SedFile=collections.sed
+/bin/rm -f $SedFile
+
+# List of Collections API
+ReplaceClassList="
+Collection 
+Comparable 
+Comparator 
+Iterator 
+List 
+ListIterator 
+Map 
+Set 
+SortedMap 
+SortedSet 
+AbstractCollection 
+AbstractList 
+AbstractMap 
+AbstractSequentialList 
+AbstractSet 
+ArrayList 
+Arrays 
+Collections 
+HashMap 
+HashSet 
+Hashtable 
+LinkedList 
+Random 
+SubList 
+TreeMap 
+TreeSet 
+Vector
+ConcurrentModificationException 
+NoSuchElementException 
+UnsupportedOperationException"
+
+# Create the sed script file
+for Class in $ReplaceClassList
+do
+    ## ============================================================
+    ## WARNING EMBEDDED TABS HERE!!!
+    ## ============================================================
+    echo "s/	java.util.$Class/	com.sun.java.util.collections.$Class/g" >> $SedFile
+    echo "s/ java.util.$Class/ com.sun.java.util.collections.$Class/g" >> $SedFile
+    ## ============================================================
+    ## added to convert ConcurrentModificationException,
+    ## NoSuchElementException and UnsupportedOperationException
+    ## MP20000326
+    ## ============================================================
+    echo "s/	java.lang.$Class/	com.sun.java.util.collections.$Class/g" >> $SedFile
+    echo "s/ java.lang.$Class/ com.sun.java.util.collections.$Class/g" >> $SedFile
+done
+
+# find all java source file and run sed script through them
+for SrcFile in $JavaSourceFiles
+do
+    let total=total+1
+    temp=`grep "java.util." $SrcFile`
+    if [ "x$temp" != "x" ]; then
+	echo -n "  [$counter]	$SrcFile  "
+
+	NewFile=${SrcFile}.new
+	BackFile=${SrcFile}.bak
+	[ -f $NewFile ] && /bin/rm -f $NewFile
+	sed -f $SedFile  $SrcFile > $NewFile
+	status=$?
+	let counter=counter+1
+	if [ $DryRunFlag -ne 0 ]; then
+	    echo "*DRYRUN*"
+	    continue
+	fi
+	if [ $status -eq 0 ]; then
+	    # backup the original original
+	    [ -f $BackFile ] && /bin/rm -f $BackFile
+	    mv $SrcFile $BackFile; status=$?
+	    if [ $status -ne 0 ]; then
+		let errors=errors+1
+		echo "*FAILED*"
+		SysError "command failed mv $SrcFile $BackFile (status:$status)"
+	    fi
+	    # the output sed file becomes the new Java source file
+	    mv $NewFile $SrcFile; status=$?
+	    if [ $status -ne 0 ]; then
+		let errors=errors+1
+		echo "*FAILED*"
+		SysError "command failed mv $NewFile $SrcFile (status:$status)"
+	    fi
+	    let cmpltd=cmpltd+1
+	    echo "*DONE*"
+	else
+	    let errors=errors+1
+	    echo "*FAILED*"
+	fi
+	## echo "**** DEATH 69 ****"; exit 69
+    else
+	let ignored=ignored+1
+    fi
+
+done
+
+if [ $DryRunFlag -ne 0 ]; then
+    echo "*DRYRUN*"
+    continue
+fi
+
+if [ $errors -eq 0 ]; then
+    cat <<XEOF
+There were apparently no errors detected. It looks like the conversion 
+process worked. You should be able to compile again with JDK 1.1.7 
+BTW: You do have a backup of the ORIGINAL distribution. Dont you?
+XEOF
+fi
+
+# fini

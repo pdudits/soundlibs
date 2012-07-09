@@ -1,0 +1,5 @@
+# for the vorbis codec
+
+org.tritonus.sampled.convert.pvorbis.VorbisFormatConversionProvider
+
+#end

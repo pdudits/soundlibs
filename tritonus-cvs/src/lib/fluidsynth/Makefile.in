@@ -1,0 +1,122 @@
+# compilation and packing of the native library for alsa
+#
+
+SHELL = /bin/sh
+
+prefix=@prefix@
+JAVADIR=$(prefix)
+REL_JAVAEXTLIBPATH=@REL_JAVAEXTLIBPATH@
+JAVAEXTLIBPATH=$(JAVADIR)/$(REL_JAVAEXTLIBPATH)
+OSNAME=@OSNAME@
+ARCHNAME=@ARCHNAME@
+CC=libtool --mode=compile @CC@
+CPPFLAGS=-g -Wall -Werror -I"$(JAVADIR)/include" -I"$(JAVADIR)/include/$(OSNAME)" #-fPIC -D_REENTRANT #-pedantic
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+LN_S=@LN_S@
+RM_F=@RM_F@
+MKDIR_P=@MKDIR_P@
+
+
+OBJDIR=../../../@BUILD_DIR@
+vpath %.class $(OBJDIR)/org/tritonus/midi/device/fluidsynth
+vpath %.class $(OBJDIR)/org/tritonus/midi/sb/fluidsynth
+
+LIBBASENAME=libtritonusfluid
+LIBDEST=$(LIBBASENAME).so.1.0
+LIBDEST_ABSOLUTE=@SRC_ABSOLUTE_PATH@/src/lib/fluidsynth/$(LIBDEST)
+#or LIBDEST_ABSOLUTE=$(CURDIR)/$(LIBDEST)
+
+# This is intended to be overridden. For instance:
+# export EXTRALIBS=-lefence; make -e
+EXTRALIBS=
+LIBS=-lfluidsynth $(EXTRALIBS)
+
+JAVAH = @JAVAH@
+
+
+JNIOBJ=\
+	org_tritonus_midi_device_fluidsynth_FluidSynthesizer.o \
+
+#	org_tritonus_midi_sb_fluidsynth_FluidSoundbank.o
+
+OBJ=\
+	$(JNIOBJ) \
+	../common/common.o
+
+LTOBJ:=$(OBJ:.o=.lo)
+
+
+JNIHEADERS:=$(JNIOBJ:.o=.h)
+
+JNICLASSFILES=\
+	FluidSynthesizer.class \
+	FluidSoundbank.class
+
+JNICLASSES=\
+	org.tritonus.midi.device.fluidsynth.FluidSynthesizer \
+	org.tritonus.midi.sb.fluidsynth.FluidSoundbank
+
+#----------------- rules -------------------
+
+.PHONY: all
+all: $(LIBDEST)
+
+$(LIBDEST):	$(OBJ)
+	libtool --mode=link gcc -g -O -o $(LIBBASENAME).la $(LTOBJ) \
+                     -rpath /usr/lib $(LIBS)
+##	$(CC) -nostartfiles -shared -Wl,-soname,$(LIBBASENAME).so.1 -o $(LIBDEST) $(OBJ) -L/usr/lib $(LIBS)
+##
+## use this for testing with a custom version of libfluidsynth
+##
+##	$(CC) -nostartfiles -shared -Wl,-soname,$(LIBBASENAME).so.1 -Wl,--rpath -Wl,/usr/local/lib -o $(LIBDEST) $(OBJ) -L/usr/lib $(LIBS)
+	$(RM_F) $(LIBBASENAME).so.1
+	$(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1
+	$(RM_F) $(LIBBASENAME).so
+	$(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so
+
+$(OBJ): $(JNIHEADERS)
+
+$(JNIHEADERS): $(JNICLASSFILES)
+	$(RM_F) $(JNIHEADERS)
+	$(JAVAH) -d . $(JNICLASSES)
+
+.PHONY: install
+install:
+	@echo "Installing $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	$(INSTALL_PROGRAM) $(LIBDEST) $(JAVAEXTLIBPATH)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: install-link
+install-link:
+	@echo "Creating links for $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	@(cd  $(JAVAEXTLIBPATH) && $(LN_S) $(LIBDEST_ABSOLUTE) $(LIBBASENAME).so.1.0)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: uninstall
+uninstall:
+	@echo "Removing $(LIBBASENAME) from $(JAVAEXTLIBPATH)"
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+
+.PHONY: uninstall-link
+uninstall-link: uninstall
+
+
+.PHONY: clean
+clean:
+	rm -rf $(LIBDEST) $(JNIHEADERS) *.o *~
+	libtool --mode=clean $(RM_F) $(LTOBJ) $(LIBBASENAME).la

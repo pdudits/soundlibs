@@ -1,0 +1,34 @@
+This file describes the mapping of ALSA mixer element's properties to
+sets of Controls of the Port line that abstracts the mixer element.
+
+L/R channels (mono false)
+common volume false
+(playback) vol true (not joined)
+common switch false
+(pb) switch true (joined)
+Example: Master
+-->
+boolean MUTE
+float VOLUME (or MASTER_GAIN)
+float BALANCE (or PAN)
+-- alternative:
+boolean MUTE
+compound [
+float VOLUME (left)
+float VOLUME (right)	// can order be guaranteed?
+]
+-------------------------------------------------------
+pb channels: L (mono true)
+common vol false
+pb vol true (joined)
+common switch: false
+playback switch: true (joined)
+Example: Master Mono
+-->
+float VOLUME
+boolean MUTE
+------------------------------------------------------
+pb channels: L/R (mono false)
+
+Example: Tone
+

@@ -1,0 +1,22 @@
+D
+/Alsa.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaCtl.java/1.2/Mon Feb 13 19:45:28 2006//
+/AlsaCtlCardInfo.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaMixer.java/1.2/Mon Feb 13 12:21:48 2006//
+/AlsaMixerElement.java/1.2/Mon Feb 13 19:45:28 2006//
+/AlsaPcm.java/1.2/Mon Feb 13 19:45:28 2006//
+/AlsaPcmHWParams.java/1.2/Mon Feb 13 19:45:28 2006//
+/AlsaPcmHWParamsFormatMask.java/1.2/Mon Feb 13 19:45:28 2006//
+/AlsaPcmSWParams.java/1.2/Mon Feb 13 19:45:28 2006//
+/AlsaSeq.java/1.2/Mon Feb 13 19:45:28 2006//
+/AlsaSeqClientInfo.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqEvent.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqPortInfo.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqPortSubscribe.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqQueueInfo.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqQueueStatus.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqQueueTempo.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqQueueTimer.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqRemoveEvents.java/1.1/Sun Jan 16 09:53:22 2005//
+/AlsaSeqSystemInfo.java/1.1/Sun Jan 16 09:53:22 2005//
+/package.html/1.1/Sun Jan 16 09:53:22 2005//

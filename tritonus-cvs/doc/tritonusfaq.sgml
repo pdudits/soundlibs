@@ -1,0 +1,866 @@
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!ENTITY % book "IGNORE">
+<!ENTITY % online "INCLUDE">
+]>
+
+
+<!--
+       MAINTENANCE POLICY
+
+- The person originally entering a question becomes its maintainer. The name of the maintainer is noted at the end of the question.
+
+- Maintainers are allowed to change their questions without notice.
+
+- If you think someone else's question has to be changed, send her or him a patch.
+
+- If you think a new section has to be introduced, make a proposal on tritonus-devel.
+
+- Use four blank lines between sections.
+
+- Use two blank lines between questions.
+
+- Use one blank line between the question and the answer.
+
+- Use one blank line between paragraphs.
+
+- Use "Java Sound", not "JavaSound".
+
+- If you think this policy needs an update, make a proposal on tritonus-devel.
+-->
+
+
+<article>
+  <articleinfo>
+    <title>Tritonus FAQ</title>
+
+
+  </articleinfo>
+
+  <!-- toc -->
+
+  <sect1><title>General</title>
+
+    <sect2><title>configure fails. What should I do?</title>
+
+      <para>After configure run, there is a file 'config.log in the directory where you run configure. It contains detailed information on failed tests If you want to ask on a mailing list, include the content of this file. (Matthias)
+    </para>
+
+
+    <sect2><title>I can't get the ALSA mixer.</title>
+
+      <para>There are three possibilities:</para>
+
+      <ItemizedList>
+	<ListItem><para>Use a jdk1.3.</para></ListItem>
+
+	<ListItem><para>Use an older jdk (e.g. jdk1.2.2) and install
+	JMF 2.0 performance pack.</para></ListItem>
+
+	<ListItem><para>Use an older jdk and install an alternative
+	Java Sound implementation (e.g. jdk1.2.2 and <ulink
+	url="http://www.tritonus.org/">Tritonus</ulink>).</para></ListItem>
+      </ItemizedList>
+
+      <para>(Matthias)</para>
+
+
+    <sect2><title>I am new to Java Sound and want to program a
+    telephony application. Is this possible, and if yes, how do I do
+    that?</title>
+
+      <para>It is possible. We cannot provide all concepts of digital
+      audio in this FAQ. There are many good books on this subject. I
+      recommend &quot;the computer music tutorial&quot; from Curtis
+      Roads, from MIT press. For simple examples how to do streaming
+      audio with Java Sound, see Matthias' Java Sound
+      Examples. (Florian)</para>
+
+
+    <sect2><title>How is the JMF related to Java Sound?</title>
+
+      <para>JMF is a high-level API, designed mainly for easy playback
+      of multimedia files, video as well as audio. Java Sound, on the
+      other hand, is a rather low-level API, designed for detailed
+      control of the audio hardware. (Matthias)</para>
+
+
+
+    <!--h3>
+      I want sun to change or add to the JS API. What can I do?
+      [use javasound-comments, but cc: to javasound-interestcd]
+    </h3-->
+
+    <sect2><title>I want a specific feature in future versions of the
+    Java Sound API</title>
+
+      <para>You can make specification requests to Sun. To read how to
+      do that, go to <ulink
+      url="http://java.sun.com/aboutJava/communityprocess/submit.html">http://java.sun.com/aboutJava/communityprocess/submit.html</ulink>.
+      You may want to discuss the feature before hand on the mailing
+      list. (Florian)</para>
+
+    <sect2><title>The Java Sound API seems fine to me, but many things
+    do not seem to be implemented.</title>
+
+      <para>This is a matter of time. Sun will improve the Java Sound
+      implementation (and also the API). Other people will provide
+      service providers to extend Java Sound. The Tritonus team will
+      release parts of Tritonus as service providers so that everybody
+      can take advantage of Tritonus' achievements. A native port of
+      Tritonus to Windows is planned, too. (Florian)</para>
+
+
+    <sect2><title>I discovered a bug in a Java Sound implementation</title>
+
+      <para>For the Sun implementation, you can submit it as a bug on
+      <ulink
+      url="http://java.sun.com/cgi-bin/bugreport.cgi">http://java.sun.com/cgi-bin/bugreport.cgi</ulink>
+      (needs a registration to the developer connection).  For
+      Tritonus, use their bug reporting system on <ulink
+      url="http://sourceforge.net/bugs/?group_id=1390">http://sourceforge.net/bugs/?group_id=1390</ulink>.
+      (Florian)</para>
+
+
+
+
+  <sect1><title>Audio Programming </title>
+
+
+    <sect2><title>I want to convert a byte[] array to short samples or
+    vice versa.</title>
+
+      <para>Look at the Tritonus source code, class
+      org.tritonus.sampled.TConversionTool.  You have to look it up in
+      the cvs repository in the subdirectory
+      src/org/tritonus/sampled. For that, go to <ulink
+      url="http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/tritonus/src/org/tritonus/sampled/?cvsroot=tritonus">http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/tritonus/src/org/tritonus/sampled/?cvsroot=tritonus</ulink>
+      and click on the version number of
+      &quot;TConversionTool.java&quot;.  It contains many methods for
+      converting byte arrays. (Florian)</para>
+
+
+    <sect2><title>Playback of audio data with Java Sound is
+    significantly quieter than with a compared player on the native
+    OS.</title>
+
+      <para>There was the issue that Sun's implementation of Java
+      Sound (at least up to version 0.99) lowers the level of output
+      in order to avoid clippings when several lines are
+      mixed. Probably this &quot;feature&quot; is the problem. </para>
+
+      <para>I find this &quot;feature&quot; quite doubtful. A Java
+      Sound programmer should use GainControls attached to single
+      lines to lower the volume, if wanted. Many applications won't
+      profit of this &quot;feature&quot;: e.g. they only play one line
+      at a time.  Or the mixed sounds don't create clippings. This is
+      not unusual, as even &quot;normalized&quot; sounds leave most of
+      the time enough room - there must coincide peaks to create a
+      clipping. The case that the soft synth AND audio are playing
+      simultaneously can be expected in &quot;quality&quot; programs
+      which provide a way to lower the gain of the lines - or do the
+      gain decrease automatically. </para>
+
+      <para>As Java Sound is supposed to be a low-level engine, such
+      an approach would not be suitable. The problem of the feature is
+      a general decrease of signal-to-noise ratio of all Java Sound
+      programs. Automatic lowering of volume prevents the use in
+      &quot;serious&quot; or professional
+      environments... (Florian)</para>
+
+
+    <sect2><title>I cannot retrieve any Port instances</title>
+
+      <para>It seems that no implementation of Java Sound provides
+      Port instances, yet. (Florian)</para>
+
+
+    <sect2><title>I want to save audio data to a file, like wav or
+    aiff</title>
+
+      <para>Have look at Matthias' Java Sound Examples. (todo: link -
+      maybe put them, too, on tritonus.org)</para>
+
+
+    <sect2><title>I want to be notified when data is available for
+    write/read in a SourceDataLine/TargetDataLine</title>
+
+      <para>You have to use
+      SourceDataLine/TargetDataLine.available(). The usual
+      implementation for streaming audio (in Java Sound) is a
+      dedicated thread for that - look at the Java Sound demo which
+      you can download from sun or at Matthias' JS
+      examples. (Florian)</para>
+
+
+    <sect2><title>I want to do some processing on an alaw stream (like
+    amplifing it)</title>
+
+      <para>It is much easier to change gain with linear encoding
+      (PCM). I would strongly suggest that - especially when you have
+      the data in linear format at first. You'd have to convert it
+      back to alaw after processing. (Florian)</para>
+
+
+    <sect2><title>I want to implement a real-time AudioInputStream,
+    but cannot give a length for it, as it is not known in
+    advance</title>
+
+      <para>You should use &quot;AudioSystem.NOT_SPECIFIED&quot; as
+      length.  This approach seems logical to me and it works fine in
+      my program.  (Florian)</para>
+
+
+    <sect2><title>I want to add special chunks to wave or aiff files
+    (like for a descriptive text or copyright)</title>
+
+      <para>The Java Sound API does not support this currently. Future
+      versions are likely to, because this is indeed quite important.
+      For the moment, you will need to implement your own class for
+      writing wave or aiff files. Or make meaningful
+      filenames... (Florian)</para>
+
+
+    <sect2><title>It fails to open any line with 16KHz sample
+    rate</title>
+
+      <para>Apparently, most Java Sound implementations do not provide
+      that, even if the sound card supports it. Future implementations
+      will support that. (Florian)</para>
+
+
+    <sect2><title>I have a byte array and want to write these data to
+    an audio file.</title>
+
+      <para>Create a ByteArrayInputStream object from the byte array,
+      create an AudioInputStream from it, then call
+      AudioSystem.write(...).  [TODO: code example, alternative
+      approach via AudioOutputStream] (Matthias)</para>
+
+
+    <sect2><title>I want to get a SourceDataLine or TargetDataLine in
+    µ-law format</title>
+
+      <para>TargetDataLines are supposed to act as a
+      &quot;direct&quot; way to communicate with the audio hardware
+      device, i.e. your soundcard. When your soundcard does not
+      support ulaw directly, the TargetDataLine won't either.</para>
+
+      <para>The way to go is to open a TargetDataLine in pcm format
+      and route it through a format converter. See doc of AudioSystem
+      to get converted Streams. The converted stream you get provides
+      ulaw samples then. </para>
+
+      <para>There is no drawback in this approach: all PC soundcards
+      that I know of deliver only PCM, so it has to be rendered to
+      ulaw anyway in software. Whether in the soundcard's driver, the
+      operating system layer or in the application (your java program)
+      doesn't matter. You get maximum portability when only using pcm
+      for TargetDataLines. (Florian)</para>
+
+
+    <sect2><title>Simultaneous recording and playback only works when
+    first opening the playback line (SourceDataLine)</title>
+
+      <para>This depends on the soundcard and its driver to the native
+      operating system. E.g. Soundblaster 16 or 64 do not provide real
+      full duplex, only a kind of pseudo full duplex. I experienced
+      under Windows that you can only use this pseudo full duplex when
+      you have a certain order in opening record/playback
+      lines. (Florian)</para>
+
+
+    <sect2><title>I want to detect the level of sound while I am
+    recording it</title>
+
+      <para>First of all, you should have the data in PCM format
+      (preferable in signed PCM). Then you can look at the samples to
+      detect the amplitude (level). Some statistics are suitable, too,
+      like taking the average of the absolute values or
+      RMS. (Florian)</para>
+
+
+    <sect2><title>I want to use multi-channel sound.</title>
+
+      <para>This is currently not possible. It will be supported in
+      Tritonus in the future. (Matthias)</para>
+
+
+
+    <sect2><title>I'm trying to do sample rate conversion with Java
+    Sound, but it doesn't work.</title>
+
+      <para>Currently, no Java Sound implementation supports
+      this. Tritonus will do so in the near future, and this will be
+      made available as a plug-in for other Java Sound
+      implementations.  Also, JMF supports sample rate
+      conversion. (Matthias)</para>
+
+
+
+    <sect2><title>I want to do equalizing/noise reduction/fft/... with
+    Java Sound.</title>
+
+      <para>Java Sound is an API concerned with basic sound input and
+      output. It does not contain digital signal processing
+      algorithms. Nevertheless, you can do this with Java; you just
+      have to code it on your own. The book "Digital Audio with Java"
+      by Craig Lindley contains some DSP algorithm. Also, it is often
+      easy to transform C or C++ code found on the net to Java.</para>
+
+      <para>For code that does fft, have a look at the <ulink
+      url="http://www.seas.smu.edu/~cjuliano/peruna.html">Peruna
+      Project</ulink>. (Matthias)</para>
+
+
+    <sect2><title>I do recording with a TargetDataLine and I want a
+    volume control for it.</title>
+
+      <para>The obvious solution would be to get a Control object of
+      type VOLUME or GAIN for the TargetDataLine and manipulate the
+      volume via this object. However, this is not possible, since
+      neither the Sun jdk1.3 nor Tritonus implement any controls for
+      TargetDataLines.</para>
+
+      <para>What you can do is to use the system mixer to control the recording
+      volume---it affects hardware settings in the soundcard. There is an
+      API to manipulate the system mixer from java: the mysterious
+      Ports. But again, this is not implemented in any known Java Sound
+      implementation (it is planned to implement Ports in future versions of
+      Tritonus).</para>
+
+      <para>The remaining possibility is to implement a volume control
+      digitally: multiplying each single sample of the sound data with
+      a certain value that lowers or raises the level
+      proportionally. (Matthias)</para>
+
+
+    <sect2><title>I want to use an audio clip on a 5 MB audio file,
+    but I get an out of memory exception.</title>
+
+      <para>For files of this size, you should stream the audio. Like
+      that you treat buffers of small size and feed them successively
+      into the the audio device. Look at Matthias' Java Sound
+      examples, there are some streaming audio players to take as a
+      start.  Java Sound Examples: <ulink
+      url="http://rupert.informatik.uni-stuttgart.de/~pfistere/jsexamples/">http://rupert.informatik.uni-stuttgart.de/~pfistere/jsexamples/</ulink>.
+      (Florian)</para>
+
+
+    <sect2><title>I want to calculate the number of bytes to skip from
+    the length in seconds.</title>
+
+      <para>Use one of the following formulas: bytes = seconds *
+      sample rate * channels * (bits per sample / 8) or bytes =
+      seconds * sample rate * frame size. You can get the sample rate,
+      number of channels, bits per sample and frame size from an
+      AudioFormat object.  (Matthias)</para>
+
+
+
+
+  <sect1><title>Encodings and file types</title>
+
+    <sect2><title>I want to play back mp3 files</title>
+
+      <para>There is a pure Java decoder of the javazoom project.
+      Tritonus, the open source implementation of Java Sound
+      incorporates it. There is a plug in available which runs under
+      any JVM. (Florian)</para>
+
+
+    <sect2><title>I want to encode mp3 files with my Java
+    program</title>
+
+      <para>Java is free, this collides with the (enforced) licences
+      for mp3 encoders. I have studied very carefully the mp3
+      licencing model and also asked at Fraunhofer (inventors of mp3)
+      for additional information: it won't be possible to deliver a
+      free mp3 encoder legally. (If anyone knows a &quot;hole&quot;,
+      please let me know. (not the available source code - this is not
+      appropriate: the encoders available as source code - most of
+      them based on the ISO reference implementation - create bad
+      quality mp3's and the licence doesn't allow the use of such
+      encoders!))</para>
+
+      <para>The Tritonus team is working on an interface to the open
+      source encoder <ulink
+      url="http://www.sulaco.org/mp3/">LAME</ulink>.  Like that people
+      who do not fear licence problems can download LAME as a separate
+      package and link it to Java Sound. (Florian)</para>
+
+
+    <sect2><title>I want to convert a PCM encoded byte[] to a uLaw
+    byte[]</title>
+
+      <para>When you are processing streams, read the documentation of
+      javax.sound.sampled.AudioSystem. There are functions like
+      getAudioInputStream(AudioFormat, AudioInputStream) that do the
+      conversion for you. </para>
+
+      <para>In case you absolutely want to do the conversion &quot;by
+      hand&quot;, look at how Tritonus is doing it: have a look at the
+      file <ulink
+      url="http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/tritonus/src/org/tritonus/sampled/?cvsroot=tritonus">TConversionTool.java</ulink>.
+      (Florian)</para>
+
+
+    <!--
+<sect2><title>
+      I want to play mp3 files with Java Sound. How can I do this?
+    </title>
+
+    <para>
+    </para>
+
+    <para>
+      An alternative is to use JMF. It contains a mp3 decoder, too.
+    </p-->
+
+
+    <!--h3>
+      I want to add support for a new sound file format. How can I do this?
+    </h3-->
+
+
+
+    <sect2><title>Is there support for RealAudio in Java Sound?</title>
+
+      <para>There isn't, and it doesn't look like there will be in the
+      near future. RealAudio is a proprietary format; there is no
+      specification available to the public. Due to that, it's hard to
+      implement support for it. If you want to change this situation,
+      bug RealNetworks to publish specs (politely,
+      please). (Matthias)</para>
+
+
+    <sect2><title>Is there support for GSM in Java Sound?</title>
+
+      <para>Yes, you can download a service provider plug-in for GSM
+      from <ulink url="http://www.tritonus.org/plugins.html">Java
+      Sound Plugins</ulink>. Since this implementation is pure-java,
+      it can be used with any Java Sound implementation on any
+      platform. For examples of using the GSM plug-in, see the
+      section "dealing with encodings" in the Java Sound Examples.
+      (Matthias)</para>
+
+
+
+    <sect2><title>Java Sound supports a format called RMF. Where can I get
+    documentation about this format?</title>
+
+      <para>You can't. RMF (Rich Music Format) is a proprietary format
+      designed by beatnik (www.beatnik.com). They don't release any
+      specs to the public. By the way, it's not true for all Java
+      Sound implementations to support RMF. Tritonus doesn't for the
+      above reason. Instead, it will support MPEG-4 Structured
+      Audio.</para>
+
+
+
+    <sect2><title>I want to read in a vox file and save it as wav
+    file</title>
+
+      <para>Probably it's simplest to do all by yourself: use a
+      RandomAccessFile or similar to open the vox file, parse the
+      headers, etc. You need to know the vox file format, you can find
+      many documents specifying it on the Internet. To create a wave
+      file from that, create a AudioFileFormat instance with the
+      format read from the vox-header and supply an InputStream with
+      the audi data of the vox file. You can then use
+      AudioSystem.write to write a wav file. (Florian)</para>
+
+
+
+
+  <sect1><title>MIDI</title>
+
+<sect2><title>MIDI input seems not to work with the Sun jdk1.3.
+    </title>
+
+    <para>
+      The Sun jdk1.3 does not implement MIDI IN.  Alternatives are:
+    </para>
+    <ItemizedList>
+      <ListItem><para><ulink url="http://www.softsynth.com/javamidi/">JavaMIDI</ulink> by Robert Marsanyi</para></ListItem>
+      <ListItem><para><ulink url="http://www.bonneville.nl/software/Wire/">Wire</ulink> by Niels Gorisse</para></ListItem>
+	<ListItem><para>MidiPort by Jörg
+      Prante. [TODO: URL]</para></ListItem>
+    </ItemizedList>
+
+      <para>Each of this is a simple library written for
+      Windows.</para>
+
+      <para>Tritonus has an almost complete MIDI implementation. If
+      you are running Linux, just install Tritonus. I you are using
+      Windows95/98, there is an experimental add-on to the Sun jdk1.3
+      that can be installed with the Sun jdk1.3. <ulink
+      url="http://rupert.informatik.uni-stuttgart.de/~pfistere/tritonus-midishare-win.zip">Download</ulink>
+      it. (Matthias)</para>
+
+
+    <sect2><title>I have unstable timing when playing back MIDI
+    notes</title>
+
+      <para>Java Sounds synthesizer is a virtual synthesizer - it uses
+      your soundcard's audio out and creates the sounds in
+      software. That is why there is a delay: audio data is quite huge
+      compared to midi data (e.g. 5 bytes compared to 88200 bytes for
+      one note). Audio data is put in blocks of a number of samples to
+      the soundcard.  When the blocks are 23ms long, you have at least
+      23 ms delay.  Another source of delay comes from moving these
+      data to the soundcard. Better soundcards, and especially PCI
+      soundcards can do the memory transfer very fast. There is also
+      more software overhead for audio data - obviously it takes more
+      time to calculate and treat audio data than MIDI data.</para>
+
+      <para>I cannot give an authoritative answer to the problem, why
+      the delay changes. It may be due to a block-wise implementation
+      of the internal Java Sound synthesizer: as the audio data is
+      always pushed in blocks to the soundcard, it may be that MIDI
+      events are always synthesized from the start of a block. (I just
+      wrote (for testing purposes) a drum machine that works like
+      this). This results in unequal delay. I am not sure about this
+      &quot;theory&quot;, as playing a midi file seems to have perfect
+      timing (i.e. midi notes may start inside a block). Let's see
+      whether the programmers of the synthesizer engine
+      respond. (Florian)</para>
+
+
+
+    <sect1><title>Java Sound in Applets</title>
+
+    <!--
+<sect2><title>
+      I want to record sound in an applet. Is this possible?
+    </title>
+-->
+
+
+<sect2><title>
+      I heared that signing applets is needed to record sound. Is this true?
+    </title>
+
+    <para>
+      Almost true.
+    </para>
+
+
+
+  <sect1><title>Performance issues</title>
+
+    <sect2><title>Is it possible to apply an FFT transform in real
+    time under Java ?</title>
+
+      <para>At least for JIT compilers, Java is very fast (under
+      certain conditions it reaches or tops C++ performance!) - and I
+      think even on no-JIT compilers, FFT analysis is no problem in
+      real time, of course depending on available processor power and
+      resources. (Florian)</para>
+
+
+    <sect2><title>How do I reduce latency - or- I want to record sound
+    and simultaneously play it back without delay</title>
+
+      <para>You'll never be able to completely remove latency. Digital
+      audio on computers is processed in &quot;chunks&quot;, i.e. a
+      small number of samples. When recording, you have to wait until
+      one chunk is filled, then it gets passed to your application. So
+      there is a minimum delay of the time of a chunk latency for
+      recording. For playback the same &quot;problem&quot;: the
+      soundcard gets chunks from the application, so when one chunk is
+      passed, the soundcard starts playing with the first sample of
+      the chunk and it takes the time of the chunk that the last
+      samples has been played. So, for playback you'll get the same
+      delay.  Added to that, the software (i.e. the different hardware
+      layers copying chunks, etc.) and the hardware (hardware latency)
+      add to the total delay.</para>
+
+      <para>There are approaches like DirectSound, ASIO or Alsa that
+      all try to minimize the software part's latency and to allow
+      very small chunks. When used efficiently on high-quality
+      soundcards, an audio loop is possible with a barely noticeable
+      delay (e.g. 20ms).</para>
+
+      <para>Java Sound (and therefore also JMF) actually adds one
+      layer to the software part, so latency is slightly increased
+      compared to native audio applications. You control the chunk
+      size with the buffer size argument when constructing a
+      SourceDataLine or TargetDataLine in Java Sound. I don't know
+      about JMF's concepts. I also experienced some problems with
+      Java Sound recording when using small buffers (like 1024 samples
+      at 44KHz). (Florian)</para>
+
+
+    <sect2><title>I want to provide successive multi track recording:
+    I record new channels while playing back all previously recorded
+    channels.  However, I get synchronization problems, there are
+    different delays</title>
+
+      <para>The delay, of when the data arrives regarded to when you
+      started recording, should be quite fixed. However, recording and
+      playback may have different delays. The delays depend on the
+      soundcard, the operating system (including the sound card
+      drivers) and the implementation of Java Sound you use (and also
+      a bit on what JDK you use).</para>
+
+      <para>Also, the Java Sound API does not provide means for
+      querying the device's latency. This would be quite difficult
+      anyway for the Java Sound subsystem. However, normal soundcards
+      have very little hardware delay (even the cheap ones), so once
+      they receive the command to start recording, they really start
+      it in a matter of some milliseconds - typically 20-30ms. </para>
+
+      <para>Using the soundcard via Java Sound, there are many layers
+      until the data arrives in your program, so some delay is added.
+      However, I haven't noticed a relevant delay when recording. I
+      haven't tried to do your approach of measuring the delay,
+      though.</para>
+
+      <para>So what you should is, is to call the start() method both
+      on TargetDataLine and SourceDataLine &quot;at once&quot; with
+      the minimum overhead possible. Notice that the buffers of the
+      recording line arrive when they have been finished recording
+      (i.e.  when the amount of time has been elapsed), while playback
+      lines need a buffer prior that they are played. This may not be
+      obvious at first. So when you do record and playback at once,
+      the first received block from the recording line corresponds in
+      time to the first played buffer (which has been submitted right
+      with &quot;start&quot;).</para>
+
+      <para>For playback of the 2 files, you should not use 2 playback
+      lines, but mix them from your program. Like that, you can at
+      least control the exact sample-delay of the 2 playback lines and
+      adjust it (probably only possible by ear).</para>
+
+      <para>These are handmade solutions. The &quot;real&quot;
+      solution is to make use of Mixer.synchronize. This is the
+      proposed solution to your problem from the Java Sound API. Like
+      that you can synchronize the recording line and the playback
+      line - or the 2 playback lines. However, it seems that it isn't
+      implemented in current versions of Java Sound (although I
+      haven't tested it). (Florian)</para>
+
+
+
+
+
+  <sect1><title>Other resources</title>
+
+
+    <sect2><title>I'm looking for books on Java Sound.</title>
+
+      <para>There are currently no books on Java Sound. 
+      There is a book covering some DSP algorithms in Java:
+    </para>
+    <ItemizedList>
+      <ListItem><para>'Digital Audio with Java' by Craig A. Lindley</para></ListItem>
+    </ItemizedList>
+    <para>
+      [TODO: JMF books] (Matthias)
+    </para>
+
+
+    <sect2><title>
+      Where can I find information on the Java Sound API?
+    </title>
+
+    <para>
+      Look at <ulink url="http://java.sun.com/products/java-media/sound/">http://java.sun.com/products/java-media/sound/</ulink>. (Matthias)
+    </para>
+
+
+    <sect2><title>
+      Where can I find information on JMF (the Java Media Framework)?
+    </title>
+
+    <para>
+      Look at <ulink url="http://java.sun.com/products/java-media/jmf">http://java.sun.com/products/java-media/jmf</ulink>. (Matthias)
+    </para>
+
+
+    <sect2><title>
+      What mail lists are relevent to Java Sound?
+    </title>
+
+    <para>
+      JAVASOUND-INTEREST@JAVA.SUN.COM
+      To subscribe, send email to
+   listserv@java.sun.com containing the following line in the message
+   body (NOT in the subject line!): signon javasound-interest
+    </para>
+
+
+    <sect2><title>What newsgroups are relevent to Java Sound?</title>
+
+      <para>There is no newsgroup devoted to Java Sound, but these
+      might help:
+
+    <ItemizedList>
+      <ListItem><para>comp.lang.java</para></ListItem>
+      <ListItem><para>comp.lang.java.programmer</para></ListItem>
+      <ListItem><para>comp.music.midi</para></ListItem>
+      <ListItem><para>comp.sys.ibm.pc.soundcard.music</para></ListItem>
+      <ListItem><para>comp.sys.ibm.pc.soundcard.tech</para></ListItem>
+      <ListItem><para>comp.sys.ibm.pc.soundcard.*  where '*' is your favorite soundcard maker</para></ListItem>
+    </ItemizedList>
+</para>
+
+
+
+  <sect1><title>Digital audio basics</title>
+
+
+    <sect2><title>What is endianess/big endian/little endian?</title>
+
+      <para>Most common computers have their memory organized in units
+      of 8 bits, called a byte. The bytes can be adressed by ordinal
+      numbers, starting with zero. (The harware organization of the
+      memory is often in rows of 16, 32, 64, 128 or even more
+      bits. But the instruction set of the processor still gives you
+      the view of the byte-organized memory.)  If you want to store a
+      value that needs more than 8 bits, the question arises how the
+      bits of the value are divided in bytes and stored in memory. If
+      you have have a value with 16 bits, there is not much discussion
+      that it has to be divided into two groups: bit 0 to 7 and bits 8
+      to 15. But then, the fight starts. Some CPUs store the first
+      group (bit 0 to 7) in the byte with the lower address and the
+      second group (bits 8 to 15) in the byte with the higher
+      address. This schema is called little-endian. As an example, all
+      Intel CPUs are little-endian. Other types of CPUs do it the
+      other way round, which is called big-endian. Sparc and PowerPC
+      (Motorola) CPUs are big-endian.  (Matthias)</para>
+
+
+
+
+
+  <sect1><title>Misc</title>
+
+
+    <sect2><title>My Java Sound program does not exit when leaving the
+    main() method</title>
+
+      <para>By default, the java virtual machine terminates when all
+      threads have terminated and the main function has also been
+      exited. It seems that Java Sound's audio subsystem creates
+      threads which remain, so you have to call explicitely
+      System.exit(int).  (Florian)</para>
+
+
+    <sect2><title>I installed Tritonus on a Sun jdk1.3.0 and I still
+    get the behaviour of Sun's Java Sound implementation.</title>
+
+      <para>Using Tritonus under jdk1.3.0 is a bit tricky. The point
+      is that by installing Tritonus you are just adding Tritonus'
+      mixers, converters and other service providers to the ones of Sun's
+      Java Sound implementation. Especially, Sun's mixing engine is
+      still the default mixer. To use Tritonus' mixers, you have to
+      select the mixer in your program manually: get the respective
+      Mixer object from AudioSystem, and allocate the lines from this
+      Mixer object. The same is true for MidiDevices. It's possible
+      to use Tritonus' javax.sound.* classes by putting them into the
+      boot classpath *before* rt.jar. But this still leaves you with
+      Sun's service providers. Getting rid of them required to change
+      the service provider configuration files inside rt.jar or other,
+      even more fancy measures. The alternative way out of the hell is
+      to use a jdk1.2.X, where Tritonus is the only Java Sound
+      implementation.  (Matthias)</para>
+
+
+    <sect2><title>I tried to compile AudioPlayer (or another program
+    from the Java Sound Examples).  I get errors about
+    gnu.getopt.Getopt not being available.</title>
+
+      <para>Download <ulink
+      url="http://www.urbanophile.com/arenn/hacking/download.html">GNU
+      getopt</ulink> and install it. Alternatively, there are
+      simplified versions of some examples that do not use GNU getopt
+      (For instance, SimpleAudioPlayer instead of AudioPlayer).
+      (Matthias)</para>
+
+
+    <sect2><title>I want to have a simple test if Java Sound is
+    available</title>
+
+      <para>Try that:</para>
+
+      <pre>public static boolean JavaSoundInstalled() {
+    boolean result=false;
+    try
+ {
+        result = javax.sound.sampled.AudioSystem.getMixerInfo().length &gt; 0;
+    } catch (Throwable t) {}
+}
+</pre>
+
+      <para>(Florian)</para>
+
+
+    <sect2><title>I want to use com.sun.* classes. Is there any
+    documentation ?</title>
+
+      <para>No, and it is strongly advised to not use them: these are
+      internal classes of the specific implementation, and in other
+      JVM's or even in future JVM's from Sun they may not be
+      present. (Florian)</para>
+
+
+    <sect2><title>I want to play a wave file in an JDK1.1.x
+    applet</title>
+
+      <para>First of all, JDK1.1 generally only provides µ-law, 8000Hz mono
+      playback. It does not provide wave file playback directly. And
+      for playback of audio data of the application, there are only
+      the &quot;unofficial&quot; sun.audio.* classes. So you'd need to
+      write your own classes that read in the wave files, convert the
+      sound data to ulaw and then use the sun.audio.* classes to play
+      them. For code that parses wav files and does ulaw conversion
+      look at tritonus' source code: <ulink
+      url="http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/tritonus/src/org/tritonus/sampled/file/?cvsroot=tritonus">http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/tritonus/src/org/tritonus/sampled/file/?cvsroot=tritonus</ulink>
+      (WaveAudioFileReader.java) and <ulink
+      url="http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/tritonus/src/org/tritonus/sampled/?cvsroot=tritonus">http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/tritonus/src/org/tritonus/sampled/?cvsroot=tritonus</ulink>
+      (TConversionTool.java). Click on the version number to see the
+      source code. Tritonus classes are under the LGPL licence.</para>
+
+      <para>Regarding sun.audio.* classes: it is discouraged to use
+      them.  I heard that they don't work anymore as expected in
+      jdk1.3. My applets using them work well from jdk1.0 to jdk1.1
+      and in all browsers that I could put my hand
+      on. (Florian)</para>
+
+
+    <sect2><title>When I call AudioSystem.getAudioFileTypes(), I
+    receive an empty array.  What's wrong?</title>
+
+      <para>This is a bug in the Sun jdk1.3.0. It always returns an
+      empty array if there are no service provider plug-ins. If you
+      have service provider plug-ins installed, it returns only the
+      types supported by the plugins, not the "built-in" ones. The
+      Tritonus implementation of this method works as
+      expected. (Matthias)</para>
+
+
+    <sect2><title>I want to use Mixer.synchronize(), but it seems to have no effect.</title>
+
+      <para>Synchronization isn't implemented in any known Java Sound implementation. It is on my TODO list for Tritonus. (Matthias)</para>
+
+
+    <!--h3>
+      When I try to run Player, I get the exception...
+    </h3-->
+
+
+
+    <!--h3>
+    I want to contribute to Tritonus. What can I do?
+  </h3-->
+
+
+    <!--h3>
+      I want to stream sound over a network. Can I do this with Java Sound?
+    </h3-->
+
+
+
+
+</article>

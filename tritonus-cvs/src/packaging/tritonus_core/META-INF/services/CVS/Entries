@@ -1,0 +1,9 @@
+D
+/javax.sound.midi.spi.MidiDeviceProvider/1.4/Wed Apr 03 23:38:21 2002//
+/javax.sound.midi.spi.MidiFileReader/1.1/Thu Aug 10 20:15:57 2000//
+/javax.sound.midi.spi.MidiFileWriter/1.1/Thu Aug 10 20:15:57 2000//
+/javax.sound.midi.spi.SoundbankReader/1.2/Wed Apr 03 23:38:21 2002//
+/javax.sound.sampled.spi.AudioFileReader/1.2/Sun Apr 15 18:55:06 2001//
+/javax.sound.sampled.spi.AudioFileWriter/1.4/Sun Apr 15 18:55:06 2001//
+/javax.sound.sampled.spi.FormatConversionProvider/1.9/Sun Jun 03 19:55:06 2007//
+/javax.sound.sampled.spi.MixerProvider/1.8/Wed Apr 03 23:38:21 2002//

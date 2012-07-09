@@ -1,0 +1,58 @@
+# test of tritonus lib
+#
+# NOTE: to run these programs successfully, you must have Tritonus already
+# installed. See the file INSTALL.
+#
+
+TESTCLASS=Sine
+#SOUNDFILE=../../sounds/flute+hrn+mrmba.au
+#SOUNDFILE=../../sounds/22-new.aif
+#SOUNDFILE=../../sounds/welcome.wav
+SOUNDFILE=../../sounds/spacemusic.au	# u-law
+#SOUNDFILE=welcome.wav
+
+JAVAC=javac
+
+%.class: %.java
+	$(JAVAC) -d $(DESTDIR) $<
+
+#JAVAFLAGS=-Djava.compiler=NONE
+PATHSETTINGS=export CLASSPATH=.:../tritonus.jar:$(CLASSPATH); export LD_LIBRARY_PATH=../src/lib/nas:../src/lib/esd
+
+SRCDIR=.
+DESTDIR=.
+OBJDIR=$(DESTDIR)
+
+vpath %.class $(OBJDIR)
+
+vpath %.java $(SRCDIR)
+
+
+SRCTMP:=$(wildcard \
+	$(SRCDIR)/*.java \
+	)
+SRC:=$(notdir $(SRCTMP))
+OBJ:=$(SRC:.java=.class)
+
+#----------------- rules -------------------
+
+.PHONY: all
+all: $(OBJ)
+
+.PHONY: test
+test:	all
+	$(PATHSETTINGS); java $(JAVAFLAGS) Sine
+
+.PHONY: testsaint
+testsaint:	saint.class
+	java $(JAVAFLAGS) saint -c ../../../sounds/sa/equalizer.saol -s ../../../sounds/sa/eq.sasl -o test.out
+	cksum *.out
+
+.PHONY: testsaint2
+testsaint2:	saint.class SourceDataLineOutputStream.class
+	java $(JAVAFLAGS) saint -c ../../../sounds/sa/equalizer.saol -s ../../../sounds/sa/eq.sasl -f s16l -o +
+
+
+.PHONY: clean
+clean:
+	rm -rf *.class *~ .\#*

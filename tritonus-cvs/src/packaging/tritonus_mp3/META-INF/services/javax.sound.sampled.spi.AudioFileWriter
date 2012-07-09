@@ -1,0 +1,2 @@
+#  for the lame mp3 encoder
+org.tritonus.sampled.file.mpeg.MpegAudioFileWriter

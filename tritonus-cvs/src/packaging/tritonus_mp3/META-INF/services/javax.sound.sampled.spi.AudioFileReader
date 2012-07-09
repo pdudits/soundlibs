@@ -1,0 +1,2 @@
+#  for the javalayer mp3 decoder
+org.tritonus.sampled.file.mpeg.MpegAudioFileReader

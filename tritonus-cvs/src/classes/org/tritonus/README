@@ -1,0 +1,25 @@
+core/
+
+Classes that are needed by Tritonus only if it is used as a
+stand-alone Java Sound implementation. (Classes needed by plug-ins are
+under share/)
+
+lowlevel/
+
+Classes that access hardware or operating system facilities. They
+typically include the usage of native methods.
+
+midi/
+
+Classes that are related to the implementation of javax.sound.midi.
+
+sampled/
+
+Classes that are related to the implementation of javax.sound.sampled.
+
+share/
+
+Base and auxiliary classes that are used by implemantations in midi/
+and share/. As a rule of thumb, classes go here if they are needed by
+more than one plug-in or if they are used generally. However, classes
+that are not used by plug-ins go to core/.

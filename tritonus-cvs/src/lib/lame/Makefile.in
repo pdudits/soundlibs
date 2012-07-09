@@ -1,0 +1,107 @@
+# compilation and packing of the native library for lame
+#
+
+SHELL = /bin/sh
+
+prefix=@prefix@
+JAVADIR=$(prefix)
+REL_JAVAEXTLIBPATH=@REL_JAVAEXTLIBPATH@
+JAVAEXTLIBPATH=$(JAVADIR)/$(REL_JAVAEXTLIBPATH)
+OSNAME=@OSNAME@
+ARCHNAME=@ARCHNAME@
+CC=@CC@
+DEFINES=-DUSE_LAME_API
+CPPFLAGS=-g -Wall -I$(JAVADIR)/include -I$(JAVADIR)/include/$(OSNAME) -fPIC -D_REENTRANT $(DEFINES)
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+LN_S=@LN_S@
+RM_F=@RM_F@
+MKDIR_P=@MKDIR_P@
+
+# to enable debugging of the JNI code:
+#DEFINES = $(DEFINES) _DEBUG
+
+OBJDIR=../../../@BUILD_DIR@
+vpath %.class $(OBJDIR)/org/tritonus/lowlevel/lame
+
+LIBBASENAME=liblametritonus
+LIBDEST=$(LIBBASENAME).so.1.0
+LIBDEST_ABSOLUTE=@SRC_ABSOLUTE_PATH@/src/lib/lame/$(LIBDEST)
+#or LIBDEST_ABSOLUTE=$(CURDIR)/$(LIBDEST)
+
+LIBS=-lmp3lame
+
+JAVAH = @JAVAH@
+
+JNIOBJ=\
+	org_tritonus_lowlevel_lame_Lame.o
+
+OBJECTS=$(JNIOBJ) lameapi.o
+
+JNICLASSFILES=\
+	Lame.class
+
+JNIHEADERS:=$(JNIOBJ:.o=.h)
+
+JNICLASSES=\
+	org.tritonus.lowlevel.lame.Lame
+
+
+#----------------- rules -------------------
+
+.PHONY: all
+all: $(LIBDEST)
+
+$(LIBDEST):	$(OBJECTS)
+# dynamic linking of liblame.so
+	$(CC) -shared -Wl,-soname,$(LIBBASENAME).so.1 -o $(LIBDEST) $(OBJECTS) $(LIBS)
+# static linking of liblame.a
+#	$(CC) -shared -Wl,-soname,$(LIBBASENAME).so.1 -o $(LIBDEST) $(OBJECTS) -L. $(LIBS)
+	@$(RM_F) $(LIBBASENAME).so.1
+	@$(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1
+	@$(RM_F) $(LIBBASENAME).so
+	@$(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so
+
+$(JNIOBJ): $(JNIHEADERS)
+
+$(JNIHEADERS): $(JNICLASSFILES)
+	@$(RM_F) $(JNIHEADERS)
+	$(JAVAH) -d . $(JNICLASSES)
+
+.PHONY: install
+install:
+	@echo "Installing $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	$(INSTALL_PROGRAM) $(LIBDEST) $(JAVAEXTLIBPATH)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: install-link
+install-link:
+	@echo "Creating links for $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	@(cd  $(JAVAEXTLIBPATH) && $(LN_S) $(LIBDEST_ABSOLUTE) $(LIBBASENAME).so.1.0)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: uninstall
+uninstall:
+	@echo "Removing $(LIBBASENAME) from $(JAVAEXTLIBPATH)"
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+
+.PHONY: uninstall-link
+uninstall-link: uninstall
+
+.PHONY: clean
+clean:
+	$(RM_F) $(LIBDEST) $(JNIHEADERS) *.o *~

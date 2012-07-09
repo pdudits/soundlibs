@@ -1,0 +1,2 @@
+#  for the gsm codec
+org.tritonus.sampled.file.gsm.GSMAudioFileReader

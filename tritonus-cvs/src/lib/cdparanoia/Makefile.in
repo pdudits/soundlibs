@@ -1,0 +1,104 @@
+# compilation and packing of the native library for using cdparanoia
+#
+
+SHELL = /bin/sh
+
+prefix=@prefix@
+JAVADIR=$(prefix)
+REL_JAVAEXTLIBPATH=@REL_JAVAEXTLIBPATH@
+JAVAEXTLIBPATH=$(JAVADIR)/$(REL_JAVAEXTLIBPATH)
+OSNAME=@OSNAME@
+ARCHNAME=@ARCHNAME@
+CC=@CC@
+CPPFLAGS=-g -Wall -Werror -I../common -I$(JAVADIR)/include -I$(JAVADIR)/include/$(OSNAME) -fPIC -D_REENTRANT #-pedantic
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+LN_S=@LN_S@
+RM_F=@RM_F@
+MKDIR_P=@MKDIR_P@
+
+OBJDIR=../../../@BUILD_DIR@
+vpath %.class $(OBJDIR)/org/tritonus/lowlevel/cdda/cdparanoia
+
+LIBBASENAME=libtritonuscdparanoia
+LIBDEST=$(LIBBASENAME).so.1.0
+LIBDEST_ABSOLUTE=@SRC_ABSOLUTE_PATH@/src/lib/cdparanoia/$(LIBDEST)
+#or LIBDEST_ABSOLUTE=$(CURDIR)/$(LIBDEST)
+
+LIBS=-lcdda_interface -lcdda_paranoia
+
+JAVAH = @JAVAH@
+
+
+JNIOBJ=\
+	org_tritonus_lowlevel_cdda_cdparanoia_Cdparanoia.o
+
+OBJ=\
+	$(JNIOBJ) \
+	../common/common.o
+
+JNIHEADERS:=$(JNIOBJ:.o=.h)
+
+JNICLASSFILES=\
+	Cdparanoia.class
+
+
+JNICLASSES=\
+	org.tritonus.lowlevel.cdda.cdparanoia.Cdparanoia
+
+#----------------- rules -------------------
+
+.PHONY: all
+all: $(LIBDEST)
+
+$(LIBDEST):	$(OBJ)
+	$(CC) -shared -Wl,-soname,$(LIBBASENAME).so.1 -Wl,-rpath,/home/matthias/java/tritonus/src/lib/common -o $(LIBDEST) $(OBJ) $(LIBS)
+	$(RM_F) $(LIBBASENAME).so.1
+	$(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1
+	$(RM_F) $(LIBBASENAME).so
+	$(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so
+
+$(OBJ): $(JNIHEADERS)
+
+$(JNIHEADERS): $(JNICLASSFILES)
+	$(RM_F) $(JNIHEADERS)
+	$(JAVAH) -d . $(JNICLASSES)
+
+.PHONY: install
+install:
+	@echo "Installing $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	$(INSTALL_PROGRAM) $(LIBDEST) $(JAVAEXTLIBPATH)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: install-link
+install-link:
+	@echo "Creating links for $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	@(cd  $(JAVAEXTLIBPATH) && $(LN_S) $(LIBDEST_ABSOLUTE) $(LIBBASENAME).so.1.0)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: uninstall
+uninstall:
+	@echo "Removing $(LIBBASENAME) from $(JAVAEXTLIBPATH)"
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+
+.PHONY: uninstall-link
+uninstall-link: uninstall
+
+
+.PHONY: clean
+clean:
+	rm -rf $(LIBDEST) $(JNIHEADERS) *.o *~

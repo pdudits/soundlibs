@@ -1,0 +1,41 @@
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, first visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+			sendNoteOffEvent(lTime, nChannel, shortMessage.getData1(), shortMessage.getData2());
+----
+either:
+			sendNoteOffEventSubscribersImmediately(
+				getSourcePort(),
+				nChannel, nNote, nVelocity);
+
+		sendNoteEventSubscribersImmediately(
+			AlsaSeq.SND_SEQ_EVENT_NOTEOFF,
+			nSourcePort,
+			nChannel, nNote, nVelocity);
+
+		sendNoteEvent(
+			nType, AlsaSeq.SND_SEQ_TIME_STAMP_REAL | AlsaSeq.SND_SEQ_TIME_MODE_REL, 0, AlsaSeq.SND_SEQ_QUEUE_DIRECT, 0L,
+			nSourcePort, AlsaSeq.SND_SEQ_ADDRESS_SUBSCRIBERS, AlsaSeq.SND_SEQ_ADDRESS_UNKNOWN,
+			nChannel, nNote, nVelocity, 0, 0);
+
+
+----
+or:
+			sendNoteOffEventSubscribersTicked(
+				getQueue(), lTime,
+				getSourcePort(),
+				nChannel, nNote, nVelocity);
+
+		sendNoteEventSubscribersTicked(
+			AlsaSeq.SND_SEQ_EVENT_NOTEOFF, nQueue, lTick,
+			nSourcePort,
+			nChannel, nNote, nVelocity);
+
+		sendNoteEvent(
+			nType, AlsaSeq.SND_SEQ_TIME_STAMP_TICK | AlsaSeq.SND_SEQ_TIME_MODE_ABS, 0, nQueue, lTick,
+			nSourcePort, AlsaSeq.SND_SEQ_ADDRESS_SUBSCRIBERS, AlsaSeq.SND_SEQ_ADDRESS_UNKNOWN,
+			nChannel, nNote, nVelocity, 0, 0);
+
+
+----

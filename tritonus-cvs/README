@@ -1,0 +1,22 @@
+This is Tritonus, version 0.3.7
+
+Tritonus is an implementation of the Java Sound API (as of Java 5.0)
+and several Java Sound plugins ("service providers"). For pre-compiled
+versions of these components, see: 
+http://www.tritonus.org/plugins.html
+
+Tritonus is distributed under the terms of the GNU Library General
+Public License. See the file LGPL for details.
+
+For installing instructions, see the file INSTALL.
+
+For new features and bug fixes, see file NEWS
+
+Please report bugs in Tritonus:
+http://sourceforge.net/bugs/?group_id=1390 or send mail to the
+developer mailing list: mailto:tritonus-devel@lists.sourceforge.net
+
+You may also have a look at the Tritonus page:
+http://www.tritonus.org/
+
+Have fun!

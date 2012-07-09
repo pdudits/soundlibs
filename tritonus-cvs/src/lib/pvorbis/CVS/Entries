@@ -1,0 +1,54 @@
+/.cvsignore/1.1/Wed Jan 05 21:01:50 2005//
+/Makefile.in/1.6/Sat Feb 05 21:07:35 2005//
+/analysis.c/1.2/Wed Jan 12 16:54:48 2005//
+/backends.h/1.1/Wed Jan 05 21:01:50 2005//
+/bitrate.c/1.2/Wed Jan 12 16:54:48 2005//
+/bitrate.h/1.1/Wed Jan 05 21:01:50 2005//
+/bitwise.c/1.1/Wed Jan 12 16:54:48 2005//
+/block.c/1.4/Fri Jan 14 10:00:01 2005//
+/codebook.c/1.3/Thu Jan 20 07:47:18 2005//
+/codebook.h/1.2/Wed Jan 12 16:54:48 2005//
+/codec_internal.h/1.3/Fri Jan 14 10:00:01 2005//
+/common.h/1.3/Wed Jan 12 16:54:48 2005//
+/envelope.c/1.2/Wed Jan 12 16:54:48 2005//
+/envelope.h/1.1/Wed Jan 05 21:01:51 2005//
+/floor0.c/1.2/Wed Jan 12 16:54:48 2005//
+/floor1.c/1.2/Wed Jan 12 16:54:48 2005//
+/framing.c/1.5/Sat Feb 05 21:07:35 2005//
+/highlevel.h/1.1/Wed Jan 05 21:01:51 2005//
+/info.c/1.6/Fri Jan 14 10:00:01 2005//
+/lookup.c/1.1/Wed Jan 05 21:01:51 2005//
+/lookup.h/1.1/Wed Jan 05 21:01:51 2005//
+/lookup_data.h/1.1/Wed Jan 05 21:01:51 2005//
+/lpc.c/1.1/Wed Jan 05 21:01:51 2005//
+/lpc.h/1.1/Wed Jan 05 21:01:51 2005//
+/lsp.c/1.1/Wed Jan 05 21:01:51 2005//
+/lsp.h/1.1/Wed Jan 05 21:01:51 2005//
+/mapping0.c/1.2/Wed Jan 12 16:54:48 2005//
+/masking.h/1.1/Wed Jan 05 21:01:51 2005//
+/mdct.c/1.1/Wed Jan 05 21:01:51 2005//
+/mdct.h/1.1/Wed Jan 05 21:01:51 2005//
+/misc.h/1.1/Wed Jan 05 21:01:51 2005//
+/org_tritonus_lowlevel_pogg_Buffer.c/1.3/Wed Jan 12 16:54:48 2005//
+/org_tritonus_lowlevel_pogg_Packet.c/1.4/Sat Feb 05 18:58:04 2005//
+/org_tritonus_lowlevel_pvorbis_Block.c/1.1/Wed Jan 05 21:01:52 2005//
+/org_tritonus_lowlevel_pvorbis_DspState.c/1.3/Fri Jan 14 10:00:01 2005//
+/org_tritonus_lowlevel_pvorbis_Info.c/1.4/Fri Jan 14 10:00:01 2005//
+/os.h/1.2/Wed Jan 12 16:54:48 2005//
+/psy.c/1.1/Wed Jan 05 21:01:52 2005//
+/psy.h/1.1/Wed Jan 05 21:01:52 2005//
+/registry.c/1.1/Wed Jan 05 21:01:52 2005//
+/registry.h/1.1/Wed Jan 05 21:01:53 2005//
+/res0.c/1.2/Wed Jan 12 16:54:48 2005//
+/scales.h/1.1/Wed Jan 05 21:01:53 2005//
+/sharedbook.c/1.2/Wed Jan 12 16:54:48 2005//
+/smallft.c/1.1/Wed Jan 05 21:01:53 2005//
+/smallft.h/1.1/Wed Jan 05 21:01:53 2005//
+/synthesis.c/1.2/Wed Jan 12 16:54:48 2005//
+/vorbisenc.c/1.1/Wed Jan 05 21:01:53 2005//
+/window.c/1.1/Wed Jan 05 21:01:53 2005//
+/window.h/1.1/Wed Jan 05 21:01:53 2005//
+D/books////
+D/modes////
+D/ogg////
+D/vorbis////

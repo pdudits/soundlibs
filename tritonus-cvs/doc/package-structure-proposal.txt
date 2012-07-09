@@ -1,0 +1,22 @@
+This is a proposal for a new package structure of Tritonus.
+It assumes that we get the domain tritonus.org.
+
+org.tritonus			-- all of Tritonus
+org.tritonus.lowlevel		-- classes for native or networked device access
+org.tritonus.lowlevel.esd	-- enlightened sound daemon
+org.tritonus.lowlevel.alsa	-- advanced linux sound architecture
+org.tritonus.lowlevel. ...
+org.tritonus.sampled		-- everything that has to do with javax.sound.sampled
+org.tritonus.sampled.file	-- AudioFileReaders & AudioFileWriters & their base and utility classes
+org.tritonus.sampled.convert	-- FormatConversionProviders & their base and utility classes
+org.tritonus.sampled.mixer	-- Mixers, MixerProviders, their lines, their base and utility classes
+org.tritonus.sampled.mixer.esd	-- mixer using the enlightened sound daemon
+org.tritonus.sampled.mixer.alsa	-- mixer using the ALSA directely
+org.tritonus.sampled.mixer. ...
+org.tritonus.midi		-- everything that has to do with javax.sound.midi ("structured" would be a better name as opposed to "sampled")
+org.tritonus.midi.file		-- SequenceProviders and MidiFileProviders
+org.tritonus.midi.device
+org.tritonus.midi.device.alsa	-- implementation utilizing the ALSA sequencer
+org.tritonus.midi.device.midishare	-- for example
+org.tritonus.midi.device. ...
+org.tritonus.util		-- general, configuration (or direct under org.tritonus?)

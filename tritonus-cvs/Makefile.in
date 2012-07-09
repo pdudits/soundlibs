@@ -1,0 +1,421 @@
+# compilation and packing for the tritonus library
+#
+
+SHELL = /bin/sh
+
+prefix=@prefix@
+
+
+JAVADIR=$(prefix)
+JAVAEXTPATH=$(JAVADIR)/@REL_JAVAEXTPATH@
+
+JAVAC=@COMPILER@
+DEF_CLASSPATH=@DEF_CLASSPATH@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+LN_S = @LN_S@
+RM_F = @RM_F@
+MKDIR_P = @MKDIR_P@
+
+DESTDIR = @BUILD_DIR@
+DISTDIR = @DIST_DIR@
+JL_SRC = @JL_DIR@
+
+%.class: %.java
+	$(JAVAC) -classpath $(DEF_CLASSPATH):$(JL_SRC):src:$$CLASSPATH -d $(DESTDIR) $<
+	@#export CLASSPATH=$(DEF_CLASSPATH):$(JL_SRC):src:$$CLASSPATH; $(JAVAC) -d $(DESTDIR) $<
+
+
+SRCDIR_PUB = src/javax/sound
+SRCDIR_PRIV = src/org/tritonus
+SRCDIR_JL = $(JL_SRC)/javazoom/jl/decoder
+SRCDIR_JESD = src/com/jcraft/jesd
+
+OBJDIR_PUB = $(DESTDIR)/javax/sound
+OBJDIR_PRIV = $(DESTDIR)/org/tritonus
+OBJDIR_JL = $(DESTDIR)/javazoom/jl/decoder
+OBJDIR_JESD = $(DESTDIR)/com/jcraft/jesd
+
+PACKAGING_ABSOLUTE_DIR=@SRC_ABSOLUTE_PATH@/src/packaging
+
+PACKSRCDIR_CORE = javax/sound org/tritonus/core
+PACKSRCDIR_SHARE = org/tritonus/share
+PACKSRCDIR_REMAINING = \
+	org/tritonus/lowlevel/alsa \
+	org/tritonus/lowlevel/esd \
+	org/tritonus/lowlevel/saint \
+	org/tritonus/midi \
+	org/tritonus/sampled/convert/*.class \
+	org/tritonus/sampled/file/*.class \
+	org/tritonus/sampled/mixer
+
+PACKSRCDIR_MP3 = \
+	org/tritonus/sampled/convert/lame \
+	org/tritonus/sampled/convert/javalayer \
+	org/tritonus/sampled/file/mpeg \
+	org/tritonus/lowlevel/lame
+
+PACKSRCDIR_GSM = \
+	org/tritonus/lowlevel/gsm \
+	org/tritonus/sampled/file/gsm \
+	org/tritonus/sampled/convert/gsm
+
+PACKSRCDIR_JL = javazoom
+
+LIBDEST_CORE=tritonus_core.jar
+LIBDEST_SHARE=tritonus_share.jar
+LIBDEST_REMAINING=tritonus_remaining.jar
+LIBDEST_MP3=tritonus_mp3.jar
+LIBDEST_GSM=tritonus_gsm.jar
+
+PLUGINS=$(LIBDEST_MP3) $(LIBDEST_GSM) $(LIBDEST_SHARE) tritonus_aos.jar
+
+LIBS=$(LIBDEST_CORE) $(LIBDEST_SHARE) $(LIBDEST_REMAINING) $(LIBDEST_MP3) $(LIBDEST_GSM)
+
+LIBDEST_ABSOLUTE_PREFIX=@SRC_ABSOLUTE_PATH@/$(DISTDIR)
+META_INF_DIR=$(DESTDIR)/META-INF/services
+
+
+vpath %.jar $(DISTDIR)
+vpath %.java $(SRCDIR_PUB)/midi
+vpath %.java $(SRCDIR_PUB)/midi/spi
+vpath %.java $(SRCDIR_PUB)/sampled
+vpath %.java $(SRCDIR_PUB)/sampled/spi
+vpath %.java $(SRCDIR_PRIV)
+vpath %.java $(SRCDIR_PRIV)/core
+vpath %.java $(SRCDIR_PRIV)/lowlevel/alsa
+vpath %.java $(SRCDIR_PRIV)/lowlevel/cdda
+vpath %.java $(SRCDIR_PRIV)/lowlevel/cdda/cdparanoia
+vpath %.java $(SRCDIR_PRIV)/lowlevel/cdda/cooked_ioctl
+vpath %.java $(SRCDIR_PRIV)/lowlevel/esd
+vpath %.java $(SRCDIR_PRIV)/lowlevel/gsm
+vpath %.java $(SRCDIR_PRIV)/lowlevel/saint
+vpath %.java $(SRCDIR_PRIV)/lowlevel/lame
+vpath %.java $(SRCDIR_PRIV)/share
+vpath %.java $(SRCDIR_PRIV)/share/sampled
+vpath %.java $(SRCDIR_PRIV)/share/sampled/convert
+vpath %.java $(SRCDIR_PRIV)/share/sampled/file
+vpath %.java $(SRCDIR_PRIV)/share/sampled/mixer
+vpath %.java $(SRCDIR_PRIV)/share/midi
+vpath %.java $(SRCDIR_PRIV)/sampled/cdda
+vpath %.java $(SRCDIR_PRIV)/sampled/convert
+vpath %.java $(SRCDIR_PRIV)/sampled/convert/gsm
+vpath %.java $(SRCDIR_PRIV)/sampled/convert/javalayer
+vpath %.java $(SRCDIR_PRIV)/sampled/convert/lame
+vpath %.java $(SRCDIR_PRIV)/sampled/file
+vpath %.java $(SRCDIR_PRIV)/sampled/file/gsm
+vpath %.java $(SRCDIR_PRIV)/sampled/file/mpeg
+vpath %.java $(SRCDIR_PRIV)/sampled/mixer
+vpath %.java $(SRCDIR_PRIV)/sampled/mixer/alsa
+vpath %.java $(SRCDIR_PRIV)/sampled/mixer/esd
+vpath %.java $(SRCDIR_PRIV)/sampled/mixer/jesd
+vpath %.java $(SRCDIR_PRIV)/midi/device
+vpath %.java $(SRCDIR_PRIV)/midi/device/alsa
+vpath %.java $(SRCDIR_PRIV)/midi/device/midishare
+vpath %.java $(SRCDIR_PRIV)/midi/device/saint
+vpath %.java $(SRCDIR_PRIV)/midi/file
+vpath %.java $(SRCDIR_JL)
+vpath %.java $(SRCDIR_JESD)
+
+vpath %.class $(OBJDIR_PUB)/midi
+vpath %.class $(OBJDIR_PUB)/midi/spi
+vpath %.class $(OBJDIR_PUB)/sampled
+vpath %.class $(OBJDIR_PUB)/sampled/spi
+vpath %.class $(OBJDIR_PRIV)
+vpath %.class $(OBJDIR_PRIV)/core
+vpath %.class $(OBJDIR_PRIV)/lowlevel/alsa
+vpath %.class $(OBJDIR_PRIV)/lowlevel/cdda
+vpath %.class $(OBJDIR_PRIV)/lowlevel/cdda/cdparanoia
+vpath %.class $(OBJDIR_PRIV)/lowlevel/cdda/cooked_ioctl
+vpath %.class $(OBJDIR_PRIV)/lowlevel/esd
+vpath %.class $(OBJDIR_PRIV)/lowlevel/gsm
+vpath %.class $(OBJDIR_PRIV)/lowlevel/saint
+vpath %.class $(OBJDIR_PRIV)/lowlevel/lame
+vpath %.class $(OBJDIR_PRIV)/share
+vpath %.class $(OBJDIR_PRIV)/share/sampled
+vpath %.class $(OBJDIR_PRIV)/share/sampled/convert
+vpath %.class $(OBJDIR_PRIV)/share/sampled/file
+vpath %.class $(OBJDIR_PRIV)/share/sampled/mixer
+vpath %.class $(OBJDIR_PRIV)/share/midi
+vpath %.class $(OBJDIR_PRIV)/sampled/cdda
+vpath %.class $(OBJDIR_PRIV)/sampled/convert
+vpath %.class $(OBJDIR_PRIV)/sampled/convert/gsm
+vpath %.class $(OBJDIR_PRIV)/sampled/convert/javalayer
+vpath %.class $(OBJDIR_PRIV)/sampled/convert/lame
+vpath %.class $(OBJDIR_PRIV)/sampled/file
+vpath %.class $(OBJDIR_PRIV)/sampled/file/gsm
+vpath %.class $(OBJDIR_PRIV)/sampled/file/mpeg
+vpath %.class $(OBJDIR_PRIV)/sampled/mixer
+vpath %.class $(OBJDIR_PRIV)/sampled/mixer/alsa
+vpath %.class $(OBJDIR_PRIV)/sampled/mixer/esd
+vpath %.class $(OBJDIR_PRIV)/sampled/mixer/jesd
+vpath %.class $(OBJDIR_PRIV)/midi/device
+vpath %.class $(OBJDIR_PRIV)/midi/device/alsa
+vpath %.class $(OBJDIR_PRIV)/midi/device/midishare
+vpath %.class $(OBJDIR_PRIV)/midi/device/saint
+vpath %.class $(OBJDIR_PRIV)/midi/file
+vpath %.class $(OBJDIR_JL)
+vpath %.class $(OBJDIR_JESD)
+
+SRCTMP:=$(wildcard \
+	$(SRCDIR_PUB)/midi/*.java \
+	$(SRCDIR_PUB)/midi/spi/*.java \
+	$(SRCDIR_PUB)/sampled/*.java \
+	$(SRCDIR_PUB)/sampled/spi/*.java \
+	$(SRCDIR_PRIV)/*.java \
+	$(SRCDIR_PRIV)/core/*.java \
+	$(SRCDIR_PRIV)/share/*.java \
+	$(SRCDIR_PRIV)/share/midi/*.java \
+	$(SRCDIR_PRIV)/share/sampled/*.java \
+	$(SRCDIR_PRIV)/share/sampled/convert/*.java \
+	$(SRCDIR_PRIV)/share/sampled/file/*.java \
+	$(SRCDIR_PRIV)/share/sampled/mixer/*.java \
+	$(SRCDIR_PRIV)/lowlevel/alsa/*.java \
+	$(SRCDIR_PRIV)/lowlevel/cdda/*.java \
+	$(SRCDIR_PRIV)/lowlevel/cdda/cdparanoia/*.java \
+	$(SRCDIR_PRIV)/lowlevel/cdda/cooked_ioctl/*.java \
+	$(SRCDIR_PRIV)/lowlevel/esd/*.java \
+	$(SRCDIR_PRIV)/lowlevel/gsm/*.java \
+	$(SRCDIR_PRIV)/lowlevel/saint/*.java \
+	$(SRCDIR_PRIV)/lowlevel/lame/*.java \
+	$(SRCDIR_PRIV)/sampled/cdda/*.java \
+	$(SRCDIR_PRIV)/sampled/convert/*.java \
+	$(SRCDIR_PRIV)/sampled/convert/gsm/*.java \
+	$(SRCDIR_PRIV)/sampled/convert/javalayer/*.java \
+	$(SRCDIR_PRIV)/sampled/convert/lame/*.java \
+	$(SRCDIR_PRIV)/sampled/file/*.java \
+	$(SRCDIR_PRIV)/sampled/file/gsm/*.java \
+	$(SRCDIR_PRIV)/sampled/file/mpeg/*.java \
+	$(SRCDIR_PRIV)/sampled/mixer/alsa/*.java \
+	$(SRCDIR_PRIV)/sampled/mixer/jesd/*.java \
+	$(SRCDIR_PRIV)/sampled/mixer/esd/*.java \
+	$(SRCDIR_PRIV)/midi/device/alsa/*.java \
+	$(SRCDIR_PRIV)/midi/file/*.java \
+	$(SRCDIR_JL)/*.java \
+	$(SRCDIR_JESD)/*.java \
+	)
+
+#	$(SRCDIR_PRIV)/midi/device/saint/*.java \
+#	$(SRCDIR_PRIV)/midi/device/midishare/*.java \ needs e.g. class grame.midishare.MidiException
+
+SRC:=$(notdir $(SRCTMP))
+OBJ:=$(SRC:.java=.class)
+
+srcdir=.
+DISTFILES=ConvertJDK117 INSTALL LGPL Makefile.in NEWS README README_mp3 configure.in configure  doc src test util #new
+SUBDIRS=@SUBDIRS@
+CONVERTTARGETS = @CONVERTTARGETS@
+
+
+#----------------- rules -------------------
+
+.PHONY: all
+# $$fb do not compile the java classes
+#all: builddir $(CONVERTTARGETS) $(LIBS) @JAR_INDEX@
+#	@for d in $(SUBDIRS); do $(MAKE) -C $$d; done
+#	@rm -rf $(DESTDIR)/META-INF
+
+all: builddir
+	@for d in $(SUBDIRS); do $(MAKE) -C $$d; done
+
+.PHONY: convert
+convert:
+	@if [ ! -f .converted ]; then ./ConvertJDK117; echo "" > .converted; fi
+
+.PHONY: builddir
+builddir:
+	@$(MKDIR_P) $(DESTDIR)
+
+#.PHONY: $(DISTDIR)
+#$(DISTDIR):
+#	@$(MKDIR_P) $(DISTDIR)
+
+#.PHONY: $(META_INF_DIR)
+#$(META_INF_DIR):
+#	@rm -rf $(DESTDIR)/META-INF
+#	@$(MKDIR_P) $(DESTDIR)/META-INF
+#	@$(MKDIR_P) $(DESTDIR)/META-INF/services
+
+#.PHONY: $(LIBDEST_CORE)
+$(LIBDEST_CORE): $(OBJ)
+	@echo Creating $(LIBDEST_CORE)
+	@$(MKDIR_P) $(DISTDIR)
+	@cd $(DESTDIR) ; jar cmf $(PACKAGING_ABSOLUTE_DIR)/tritonus_core/manifest.mf \
+		$(LIBDEST_ABSOLUTE_PREFIX)/$(LIBDEST_CORE) $(PACKSRCDIR_CORE)
+
+#.PHONY: $(LIBDEST_SHARE)
+$(LIBDEST_SHARE): $(OBJ)
+	@echo Creating $(LIBDEST_SHARE)
+	@$(MKDIR_P) $(DISTDIR)
+	@cd $(DESTDIR) ; jar cf $(LIBDEST_ABSOLUTE_PREFIX)/$(LIBDEST_SHARE) $(PACKSRCDIR_SHARE)
+
+#.PHONY: $(LIBDEST_REMAINING)
+$(LIBDEST_REMAINING): $(OBJ)
+	@echo Creating $(LIBDEST_REMAINING)
+	@$(MKDIR_P) $(DISTDIR)
+	@rm -rf $(DESTDIR)/META-INF
+	@$(MKDIR_P) $(DESTDIR)/META-INF
+	@$(MKDIR_P) $(DESTDIR)/META-INF/services
+	@#$(RM_F) $(DESTDIR)/META-INF/services/javax*
+	@cp src/packaging/tritonus_core/META-INF/services/javax* $(META_INF_DIR)/
+	@cd $(DESTDIR) ; jar cf $(LIBDEST_ABSOLUTE_PREFIX)/$(LIBDEST_REMAINING) \
+		$(PACKSRCDIR_REMAINING) META-INF/services/
+
+#.PHONY: $(LIBDEST_MP3)
+$(LIBDEST_MP3):	$(OBJ)
+	@echo Creating $(LIBDEST_MP3)
+	@$(MKDIR_P) $(DISTDIR)
+	@rm -rf $(DESTDIR)/META-INF
+	@$(MKDIR_P) $(DESTDIR)/META-INF
+	@$(MKDIR_P) $(DESTDIR)/META-INF/services
+	@#$(RM_F) $(DESTDIR)/META-INF/services/javax*
+	@cp src/packaging/tritonus_mp3/META-INF/services/javax* $(META_INF_DIR)/
+	@cd $(DESTDIR) ; jar cmf $(PACKAGING_ABSOLUTE_DIR)/tritonus_mp3/manifest.mf \
+		$(LIBDEST_ABSOLUTE_PREFIX)/$(LIBDEST_MP3) $(PACKSRCDIR_MP3) META-INF/services/
+
+#.PHONY: $(LIBDEST_GSM)
+$(LIBDEST_GSM):	$(OBJ)
+	@echo Creating $(LIBDEST_GSM)
+	@$(MKDIR_P) $(DISTDIR)
+	@rm -rf $(DESTDIR)/META-INF
+	@$(MKDIR_P) $(DESTDIR)/META-INF
+	@$(MKDIR_P) $(DESTDIR)/META-INF/services
+	@#$(RM_F) $(DESTDIR)/META-INF/services/javax*
+	@cp src/packaging/tritonus_gsm/META-INF/services/javax* $(META_INF_DIR)/
+	@cd $(DESTDIR) ; jar cmf $(PACKAGING_ABSOLUTE_DIR)/tritonus_gsm/manifest.mf \
+		$(LIBDEST_ABSOLUTE_PREFIX)/$(LIBDEST_GSM) $(PACKSRCDIR_GSM) META-INF/services/
+
+.PHONY: jar_index
+jar_index: $(LIBS)
+	@echo Creating indexes for $(LIBDEST_CORE), $(LIBDEST_MP3), and $(LIBDEST_GSM)
+	@cd $(DISTDIR) ; jar -i $(LIBDEST_CORE)
+	@cd $(DISTDIR) ; jar -i $(LIBDEST_MP3)
+	@cd $(DISTDIR) ; jar -i $(LIBDEST_GSM)
+
+.PHONY: jikesinc
+jikesinc: builddir $(SRC)
+	@(if test "$(JAVAC)" != "jikes" ; then \
+		echo "This is only available with jikes as compiler." ; exit 1 ; fi)
+	@echo "This will not build the jars. You need to include the directory \"$(DESTDIR)\" in the CLASSPATH."
+	@export CLASSPATH=$(DEF_CLASSPATH):$$CLASSPATH; $(JAVAC) ++ -d $(DESTDIR) $(SRCTMP)
+
+
+.PHONY: doc
+doc:	all 
+	$(MAKE) -C doc
+
+.PHONY: test
+test:	all 
+	$(MAKE) -C all
+
+.PHONY: install
+install: all
+	@for l in $(LIBS) ; do \
+		echo "Installing $$l in $(JAVAEXTPATH)" ; \
+		$(INSTALL_DATA) $(DISTDIR)/$$l $(JAVAEXTPATH) ; done
+	@for d in $(SUBDIRS); do $(MAKE) -C $$d install; done
+
+.PHONY: install-link
+install-link: all
+	@for l in $(LIBS) ; do \
+		echo "Installing link for $$l in $(JAVAEXTPATH)" ; \
+		$(RM_F) $(JAVAEXTPATH)/$$l ; \
+		(cd  $(JAVAEXTPATH) && $(LN_S) $(LIBDEST_ABSOLUTE_PREFIX)/$$l $$l) ; done
+	@for d in $(SUBDIRS); do $(MAKE) -C $$d install-link; done
+
+# TODO: install-link-usc
+#links /usr/share/common/tritonus_*.jar to build version; links .../jre/lib/ext/... to /u/s/j
+
+.PHONY: uninstall
+uninstall:
+	@for l in $(LIBS) ; do \
+		echo "Removing $$l from $(JAVAEXTPATH)" ; \
+		$(RM_F) $(JAVAEXTPATH)/$$l ; done
+	@for d in $(SUBDIRS); do $(MAKE) -C $$d uninstall; done
+
+.PHONY: uninstall-link
+uninstall-link: uninstall
+
+.PHONY: clean
+clean:
+	cd $(DISTDIR) ; $(RM_F) $(LIBS)
+	rm -rf $(DESTDIR)/org $(DESTDIR)/javax $(DESTDIR)/javazoom $(DESTDIR)/com $(DESTDIR)/META-INF
+	find . -name '*~' -exec rm '{}' ';'
+	find . -name '*.class' -exec rm '{}' ';'
+	find . -name '*.bak' -exec rm '{}' ';'
+	find . -name '.directory' -exec rm '{}' ';'
+	@for d in $(SUBDIRS); do $(MAKE) -C $$d clean; done
+
+.PHONY: veryclean
+veryclean: clean
+	rm -rf TAGS
+
+.PHONY:tags
+tags: TAGS
+
+TAGS: $(SRCTMP)
+	etags $(SRCTMP)
+
+
+userdist:
+	echo tritonus-`cat VERSION` >.fname
+	-rm -rf `cat .fname`
+	mkdir `cat .fname`
+	dst=`cat .fname`; for f in $(DISTFILES); do \
+	ln $(srcdir)/$$f $$dst/$$f || { echo copying $$f; \
+	cp -pr $(srcdir)/$$f $$dst/$$f; } \
+	done
+	tar czhf `cat .fname`.tar.gz `cat .fname`
+	-rm -rf `cat .fname` .fname
+
+devdist:
+	echo tritonus-`date +%Y-%m-%d` >.fname
+	-rm -rf `cat .fname`
+	mkdir `cat .fname`
+	dst=`cat .fname`; for f in $(DISTFILES); do \
+	ln $(srcdir)/$$f $$dst/$$f || { echo copying $$f; \
+	cp -pr $(srcdir)/$$f $$dst/$$f; } \
+	done
+	tar czhf `cat .fname`.tar.gz `cat .fname`
+	-rm -rf `cat .fname` .fname
+
+bindist: bindist-esd bindist-alsa
+
+#TODO: dependancies, readme
+bindist-esd:
+	tar czf tritonus-esd-linux-x86-`date +%Y-%m-%d`.tar.gz \
+	-C doc/bindists/esd readme.txt \
+	-C ../../../dist tritonus_share.jar tritonus_esd.jar \
+	-C ../src/lib/esd libtritonusesd.so libtritonusesd.so.1 libtritonusesd.so.1.0
+
+#TODO: dependancies, readme
+bindist-alsa:
+	tar czf tritonus-alsa-linux-x86-`date +%Y-%m-%d`.tar.gz \
+	-C doc/bindists/alsa readme.txt \
+	-C ../../../dist tritonus_share.jar tritonus_alsa.jar \
+	-C ../src/lib/alsa libtritonusalsa.so libtritonusalsa.so.1 libtritonusalsa.so.1.0
+
+bindist-upload:	bindist
+	scp tritonus-esd-linux-x86-`date +%Y-%m-%d`.tar.gz  tritonus-alsa-linux-x86-`date +%Y-%m-%d`.tar.gz www.tritonus.org:vtritonus/htdocs
+
+devdist-upload: devdist
+	echo tritonus-`date +%Y-%m-%d.tar.gz` >.fname
+	scp `cat .fname` tritonus.sourceforge.net:/home/groups/ftp/pub/tritonus/
+	-rm -f .fname
+
+plugins-upload:	$(PLUGINS)
+	cd $(DISTDIR) ; scp $(PLUGINS) www.tritonus.org:vtritonus/htdocs
+
+# doesn't work on www.tritonus.org
+plugins-rsync:	$(PLUGINS)
+	cd $(DISTDIR) ; rsync $(PLUGINS) www.tritonus.org:vtritonus/htdocs
+
+
+#------- EXPERIMENTAL ----------------
+
+nativelibs:
+	$(MAKE) -C src/lib/alsa
+	$(MAKE) -C src/lib/greatlysimplifiedvorbis

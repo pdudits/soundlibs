@@ -1,0 +1,4 @@
+# for the javalayer mp3 decoder
+# and the lame mp3 encoder
+org.tritonus.sampled.convert.javalayer.MpegFormatConversionProvider
+org.tritonus.sampled.convert.lame.Mp3LameFormatConversionProvider

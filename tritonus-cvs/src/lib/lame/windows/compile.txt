@@ -1,0 +1,36 @@
+Compiling the native lametritonus dll
+-------------------------------------
+1. make sure the header file org_tritonus_lowlevel_lame_Lame.h exists.
+   You can create it with 
+   javah org.tritonus.lowlevel.lame.Lame .
+2. Copy org_tritonus_lowlevel_lame_Lame.c from one directory higher
+   to this directory.
+2.1 For Borland free C++ command line tools:
+    (download from http://www.borland.com/bcppbuilder/freecompiler/cppc55steps.html)
+    Edit the provided the makefile to match your settings. 
+    Run it with "make" (Borland make)
+2.2 For MS VC++ 6.0:
+    Open a workspace with bladenc.c, bladenc.h, 
+    org_tritonus_lowlevel_lame_Lame.h, org_tritonus_lowlevel_lame_Lame.c.
+    ( old project/workspace files are included)
+    Go to project settings, select "All configurations", click on the 
+    C/C++ tab and selct as category "Preprocessor". In "Additional 
+    include directories" set the path of the "include" and 
+    "include\win32" directories of your JDK1.3 installation.
+    Set the symbol "USE_BLADENC_API".
+    You can set the symbol _BLADEDLL when you want to link statically.
+    You need to add lame_enc.dll to the Link section in Project Settings.
+    Static loading is not tested.
+    Dynamic loading is recommended.
+
+Install the dll in e.g.
+\JDK1.3\jre\bin\ext (for the JDK 1.3)
+\Program Files\JavaSoft\JRE\1.3.0_02\lib\ext (for JRE 1.3.0_02 - also for Java plugin)
+
+When your IE or NS supports Java 2 Version 1.3 or higher directly,
+you may need to install it in
+\WINNT\java\trustlib (for Internet Explorer)
+\Program Files\Netscape\Communicator\java\classes (for Netscape 4.6).
+
+You need tritonus_mp3.jar and tritonus_share.jar to make the encoder work.
+You can use "Mp3Encoder.java" from the Java Sound Examples to test it.

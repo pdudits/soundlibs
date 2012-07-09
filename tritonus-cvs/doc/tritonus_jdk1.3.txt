@@ -1,0 +1,21 @@
+
+    <sect2><title>I installed Tritonus on a Sun jdk1.3.0 and I still
+    get the behaviour of Sun's Java Sound implementation.</title>
+
+      <para>Using Tritonus under jdk1.3.0 is a bit tricky. The point
+      is that installing Tritonus you are just adding Tritonus'
+      mixers, converters and other service providers to ones of Sun's
+      Java Sound implementation. Especially, Sun's mixing engine is
+      still the default mixer. To use Tritonus' mixers, you have to
+      select the mixer in your program manually: get the respective
+      Mixer object from AudioSystem, and allocate the lines from this
+      Mixer object. The same is true for MidiDevices. It's possible
+      to use Tritonus' javax.sound.* classes by putting them into the
+      boot classpath *before* rt.jar. But this still leaves you with
+      Sun's service providers. Getting rid of them required to change
+      the service provider configuration files inside rt.jar or other,
+      even more fancy measures. The alternative way out of the hell is
+      to use a jdk1.2.X, where Tritonus is the only Java Sound
+      implementation.  (Matthias)</para>
+
+

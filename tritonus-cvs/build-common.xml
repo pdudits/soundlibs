@@ -1,0 +1,539 @@
+<!--
+     Tritonus build
+     common definitions
+
+     This file is included by build.xml and build-debug.xml.
+-->
+  <!--taskdef name="sablecc" classname="org.sablecc.ant.taskdef.Sablecc"/-->
+
+<target name="init">
+  <tstamp/>
+  <property name="src" value="${basedir}/src" />
+  <property name="build" value="${basedir}/build" />
+  <property name="dist"  value="${basedir}/dist" />
+  <property name="javadoc.dir"  value="${basedir}/doc/apidoc" />
+  <property name="src.classes" value="${src}/classes" />
+  <property name="src.misc" value="${src}/misc" />
+  <property name="debug" value="on"/>
+  <property name="source" value="1.5"/>
+  <available
+			 classname="grame.midishare.Midi"
+			 property="midishare-present" />
+  <available
+			 classname="javazoom.jl.decoder.Decoder"
+			 property="javalayer-present" />
+  <available
+			 classname="com.jcraft.jorbis.JOrbisException"
+			 property="jorbis-present" />
+
+  <property
+			name="java_ext_path"
+			value="${java.home}/lib/ext" />
+  <loadfile property="version"
+			srcFile="version" />
+  <property name="plugins"  value="tritonus_share-${version}.jar tritonus_remaining-${version}.jar tritonus_gsm-${version}.jar tritonus_javasequencer-${version}.jar tritonus_src-${version}.jar tritonus_aos-${version}.jar tritonus_vorbis-${version}.jar tritonus_jorbis-${version}.jar tritonus_dsp-${version}.jar tritonus_mp3-${version}.jar" />
+  <property name="plugins-bin"  value="tritonus-vorbis-linux-${version}.zip" />
+</target>
+
+
+<target name="prepare" depends="init">
+  <mkdir dir="${build}" />
+  <mkdir dir="${dist}" />
+  <mkdir dir="${javadoc.dir}"/>
+</target>
+
+
+<!-- compile targets are in build.xml/build-aspectj.xml -->
+
+<target name="dist"
+		depends="dist-common,dist-javalayer-dependent,dist-jorbis-dependent,dist-midishare-dependent" >
+</target>
+
+
+<target name="dist-common"
+		depends="compile" >
+
+  <!-- CORE: contains public classes and SPI instantiation support -->
+  <jar jarfile="${dist}/tritonus_core-${version}.jar">
+    <fileset dir="${build}">
+      <include name="javax/sound/" />
+      <include name="org/tritonus/core/" />
+      <!-- This is a hack needed for the debug build. Files in this
+      directory aren't needed for the release build. However, it
+      should do no harm if files laying around are included.
+      -->
+      <include name="org/tritonus/debug/" />
+    </fileset>
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar tritonus_remaining-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- SHARE: contains base and auxiliary classes for all other jars -->
+  <jar jarfile="${dist}/tritonus_share-${version}.jar">
+	<fileset dir="${build}">
+	  <include name="org/tritonus/share/" />
+	</fileset>
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+    </manifest>
+  </jar>
+
+  <!-- ALSA: contains Alsa mixer and Alsa sequencer -->
+  <jar jarfile="${dist}/tritonus_alsa-${version}.jar">
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/lowlevel/alsa/" />
+	  <include name="org/tritonus/sampled/mixer/alsa/" />
+	  <include name="org/tritonus/midi/device/alsa/" />
+	</fileset>
+	<fileset dir="${src}/packaging/tritonus_alsa" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar tritonus_remaining-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- ESD: contains Esd mixer -->
+  <jar jarfile="${dist}/tritonus_esd-${version}.jar">
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/lowlevel/esd/" />
+	  <include name="org/tritonus/sampled/mixer/esd/" />
+	</fileset>
+	<fileset dir="${src}/packaging/tritonus_esd" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar tritonus_remaining-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- GSM: -->
+  <jar jarfile="${dist}/tritonus_gsm-${version}.jar">
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/lowlevel/gsm/" />
+	  <include name="org/tritonus/sampled/convert/gsm/" />
+	  <include name="org/tritonus/sampled/file/gsm/" />
+	</fileset>
+	<fileset dir="${src}/packaging/tritonus_gsm" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- (native) VORBIS: -->
+  <jar jarfile="${dist}/tritonus_vorbis-${version}.jar">
+      <fileset dir="${build}" >
+      <include name="org/tritonus/lowlevel/ogg/" />
+      <include name="org/tritonus/lowlevel/vorbis/" />
+      <include name="org/tritonus/sampled/convert/vorbis/" />
+      <include name="org/tritonus/sampled/file/vorbis/" />
+      <!-- This is a hack needed for the debug build. Files in this
+      directory aren't needed for the release build. However, it
+      should do no harm if files laying around are included.
+      -->
+      <include name="org/tritonus/debug/" />
+    </fileset>
+    <fileset dir="${src}/packaging/tritonus_vorbis" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- (pure java, standalone) VORBIS not finished! -->
+  <jar jarfile="${dist}/tritonus_pvorbis-${version}.jar">
+    <fileset dir="${build}" >
+      <include name="org/tritonus/lowlevel/pogg/" />
+      <include name="org/tritonus/lowlevel/pvorbis/" />
+      <include name="org/tritonus/sampled/convert/pvorbis/" />
+      <include name="org/tritonus/sampled/file/pvorbis/" />
+      <!-- This is a hack needed for the debug build. Files in this
+      directory aren't needed for the release build. However, it
+      should do no harm if files laying around are included.
+      -->
+      <include name="org/tritonus/debug/" />
+    </fileset>
+    <fileset dir="${src}/packaging/tritonus_pvorbis" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- JAVASEQUENCER: -->
+  <jar jarfile="${dist}/tritonus_javasequencer-${version}.jar">
+    <fileset dir="${build}" >
+      <include name="org/tritonus/midi/device/java/" />
+    </fileset>
+    <fileset dir="${src}/packaging/tritonus_javasequencer" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- FLUIDSYNTH: -->
+  <jar jarfile="${dist}/tritonus_fluidsynth-${version}.jar">
+    <fileset dir="${build}" >
+      <include name="org/tritonus/midi/device/fluidsynth/" />
+      <include name="org/tritonus/midi/sb/fluidsynth/" />
+    </fileset>
+    <fileset dir="${src}/packaging/tritonus_fluidsynth" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- AOS: AudioOutputStream stuff-->
+  <jar jarfile="${dist}/tritonus_aos-${version}.jar" >
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/sampled/file/*AudioOutputStream.class/" />
+	  <include name="org/tritonus/sampled/file/*Tool.class/" />
+	</fileset>
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <!-- FIXME: tritonus_share not needed in CLASSPATH ? -->
+    </manifest>
+  </jar>
+
+  <!-- SRC: sample rate converter -->
+  <jar jarfile="${dist}/tritonus_src-${version}.jar">
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/sampled/convert/SampleRateConversionProvider*.class" />
+	</fileset>
+	<fileset dir="${src}/packaging/tritonus_src" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar"/>
+    </manifest>
+  </jar>
+
+  <!-- CDDA: -->
+  <jar jarfile="${dist}/tritonus_cdda-${version}.jar" >
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/lowlevel/cdda/" />
+	  <include name="org/tritonus/sampled/cdda/" />
+	</fileset>
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <!-- FIXME: tritonus_share not needed in CLASSPATH ? -->
+    </manifest>
+  </jar>
+
+  <!-- DSP: -->
+  <jar jarfile="${dist}/tritonus_dsp-${version}.jar">
+	<fileset dir="${build}">
+	  <include name="org/tritonus/lowlevel/dsp/" />
+	  <include name="org/tritonus/dsp/" />
+	</fileset>
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <!-- FIXME: tritonus_share not needed in CLASSPATH ? -->
+    </manifest>
+  </jar>
+
+  <!-- REMAINING:: -->
+  <jar jarfile="${dist}/tritonus_remaining-${version}.jar">
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/midi/file/" />
+	  <include name="org/tritonus/sampled/file/*.class" />
+	  <include name="org/tritonus/sampled/convert/*.class" />
+	</fileset>
+	<fileset dir ="${src}/packaging/tritonus_core" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar"/>
+    </manifest>
+  </jar>
+</target>
+
+
+<target name="dist-javalayer-dependent"
+		depends="compile,compile-javalayer-dependent"
+		if="javalayer-present" >
+
+  <!-- MP3: -->
+  <jar jarfile="${dist}/tritonus_mp3-${version}.jar">
+    <fileset dir="${build}" >
+      <include name="org/tritonus/lowlevel/lame/" />
+      <include name="org/tritonus/sampled/convert/javalayer/" />
+      <include name="org/tritonus/sampled/convert/lame/" />
+      <include name="org/tritonus/sampled/file/mpeg/" />
+    </fileset>
+    <fileset dir="${src}/packaging/tritonus_mp3" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar jl1.0.jar"/>
+    </manifest>
+  </jar>
+</target>
+
+
+<target name="dist-jorbis-dependent"
+		depends="compile-jorbis-dependent"
+		if="jorbis-present" >
+
+  <!-- JORBIS (depends on the jorbis/jogg jars): -->
+  <jar jarfile="${dist}/tritonus_jorbis-${version}.jar">
+    <fileset dir="${build}" >
+      <include name="org/tritonus/sampled/convert/jorbis/" />
+      <include name="org/tritonus/sampled/file/jorbis/" />
+      <!-- This is a hack needed for the debug build. Files in this
+      directory aren't needed for the release build. However, it
+      should do no harm if files laying around are included.
+      -->
+      <include name="org/tritonus/debug/" />
+    </fileset>
+    <fileset dir="${src}/packaging/tritonus_jorbis" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar jogg-0.0.7.jar jorbis-0.0.15.jar"/>
+    </manifest>
+  </jar>
+</target>
+
+
+<target name="dist-midishare-dependent"
+		depends="compile,compile-midishare-dependent"
+		if="midishare-present" >
+
+  <!-- MIDISHARE: -->
+  <jar jarfile="${dist}/tritonus_midishare-${version}.jar">
+	<fileset dir="${build}" >
+	  <include name="org/tritonus/midi/device/midishare/" />
+	</fileset>
+	<fileset dir="${src}/packaging/tritonus_midishare" />
+    <manifest>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Built-Date" value="${DSTAMP}"/>
+      <attribute name="Class-Path" value="tritonus_share-${version}.jar tritonus_remaining-${version}.jar"/>
+    </manifest>
+  </jar>
+</target>
+
+
+<target name="compile-libs"
+		depends="prepare" >
+  <exec
+		dir="."
+		executable="make"
+		output="native0.log" >
+	<arg line="-C src/lib/alsa" />
+  </exec>
+  <exec
+		dir="."
+		executable="make"
+		output="native1.log" >
+	<arg line="-C src/lib/esd" />
+  </exec>
+  <exec
+		dir="."
+		executable="make"
+		output="native2.log" >
+	<arg line="-C src/lib/lame" />
+  </exec>
+  <exec
+		dir="."
+		executable="make"
+		output="native3.log" >
+	<arg line="-C src/lib/saint" />
+  </exec>
+</target>
+
+
+  <!--
+  The following two targets should depend on uninstall, so that
+  old files are safely removed. However, there is a problem with
+  ant deleting symbolic links (VM crash), so it is left out
+  for the moment.
+
+  Also note that these targets only work for jdk >= 1.2.
+  -->
+<target name="install" depends="dist">
+  <copy
+		todir="${java_ext_path}" >
+	<fileset dir="${dist}" >
+	  <include name="*.jar" />
+	</fileset>
+  </copy>
+</target>
+
+<target name="install-link" depends="dist">
+  <exec
+		dir="${java_ext_path}"
+		executable="ln" >
+	<arg line="-s ${basedir}/${dist}/tritonus_core-${version}.jar ${java_ext_path}" />
+  </exec>
+  <exec
+		dir="${java_ext_path}"
+		executable="ln" >
+	<arg line="-s ${basedir}/${dist}/tritonus_share-${version}.jar ${java_ext_path}" />
+  </exec>
+  <exec
+		dir="${java_ext_path}"
+		executable="ln" >
+	<arg line="-s ${basedir}/${dist}/tritonus_remaining-${version}.jar ${java_ext_path}" />
+  </exec>
+  <exec
+		dir="${java_ext_path}"
+		executable="ln" >
+	<arg line="-s ${basedir}/${dist}/tritonus_mp3-${version}.jar ${java_ext_path}" />
+  </exec>
+  <exec
+		dir="${java_ext_path}"
+		executable="ln" >
+	<arg line="-s ${basedir}/${dist}/tritonus_gsm-${version}.jar ${java_ext_path}" />
+  </exec>
+</target>
+
+<target name="uninstall" depends="init">
+  <echo message="ext path: ${java_ext_path}" />
+  <delete file="${java_ext_path}/tritonus*.jar" />
+</target>
+
+
+<target name="clean" depends="init,clean-javadoc">
+  <delete dir="${build}" />
+  <delete dir="${dist}" />
+</target>
+
+
+<target name="clean-javadoc" depends="init">
+  <delete dir="${javadoc.dir}"/>
+</target>
+
+
+
+<target name="plugins-upload"
+		depends="dist">
+  <exec
+		dir="${dist}"
+		executable="scp"
+		output="upload.log" >
+	<arg line="-p ${plugins} www.tritonus.org:vtritonus/htdocs/" />
+  </exec>
+</target>
+
+
+<target name="plugins-bin-upload"
+		depends="dist-vorbis">
+  <exec
+		dir="${dist}"
+		executable="scp"
+		output="upload.log" >
+	<arg line="-p ${plugins-bin} www.tritonus.org:vtritonus/htdocs/" />
+  </exec>
+</target>
+
+
+
+  <!-- for saol -->
+<target name="compile-saol" depends="prepare">
+  <!--sablecc
+    src="${src.misc}/"
+    outputdirectory="${src.classes}" /-->
+    <!-- currently, this has to be executed manually:
+    sablecc -d src/classes/ src/misc/saol.grammar -->
+  <javac srcdir="${src.classes}"
+		 depend="yes"
+		 debug="${debug}"
+		 destdir="${build}"
+		 includes="org/tritonus/saol/"
+		 excludes="org/tritonus/whatever" />
+</target>
+
+<target name="dist-saol"
+		depends="compile-saol" >
+
+  <jar jarfile="${dist}/saol-${version}.jar">
+	<fileset dir="${build}">
+	  <include name="org/tritonus/saol/" />
+	</fileset>
+	<fileset dir="${src.classes}">
+	  <include name="org/tritonus/saol/sablecc/lexer/lexer.dat" />
+	  <include name="org/tritonus/saol/sablecc/parser/parser.dat" />
+	</fileset>
+  </jar>
+</target>
+
+
+
+<!-- documentation -->
+<target name="javadoc-all" depends="javadoc-tritonus,javadoc-javasound"/>
+
+<target name="javadoc-tritonus" depends="prepare">
+  <javadoc
+		   package="true" sourcepath="${src}" destdir="${javadoc.dir}"
+		   packagenames="org.tritonus.*"
+		   excludepackagenames="org.tritonus.debug,org.tritonus.midi.device.midishare,org.tritonus.sampled.convert.javalayer"
+		   Windowtitle="Tritonus API"
+		   link="http://java.sun.com/j2se/1.5.0/docs/api/"
+		   use="true"
+		   source="1.5"
+		   additionalparam="-breakiterator">
+  </javadoc>
+  <!-- additionalparam="-breakiterator" -->
+</target>
+
+
+<target name="javadoc-javasound" depends="prepare">
+  <javadoc
+		   package="true" sourcepath="${src}" destdir="${javadoc.dir}"
+		   packagenames="javax.sound.*"
+		   Windowtitle="Java Sound API"
+		   source="1.5"
+		   additionalparam="-breakiterator">
+  </javadoc>
+  <!-- additionalparam="-breakiterator" -->
+</target>
+
+
+<target name="javadoc-upload"
+		depends="javadoc-tritonus">
+  <exec
+		dir="${basedir}"
+		executable="rsync">
+    <arg line="-arvC ${javadoc.dir} tritonus.sourceforge.net:/home/groups/t/tr/tritonus/htdocs/" />
+  </exec>
+</target>
+
+
+<target name="tags" depends="init"
+	description="Create TAGS file for emacs">
+  <fileset dir="${src}" id="src.files">
+    <include name="**/*.java"/>
+  </fileset>
+  <pathconvert pathsep=" " property="src.files.expanded" refid="src.files"/>
+  <!--echo message = "files: ${src.files.expanded}" /-->
+  <exec executable="etags">
+    <arg line="-o ${src}/TAGS ${src.files.expanded}" />
+  </exec>
+</target>
+
+
+<target name="dist-vorbis" depends="dist-common"
+		description="Create binary distribution for vorbis codec">
+  <zip destfile="${dist}/tritonus-vorbis-linux-${version}.zip">
+	<zipfileset dir="${dist}" includes="tritonus_vorbis-${version}.jar,tritonus_share-${version}.jar" prefix="tritonus-vorbis-${version}"/>
+	<zipfileset dir="doc/bindists/vorbis" includes="readme.txt" prefix="tritonus-vorbis-${version}"/>
+	<zipfileset dir="src/lib/vorbis" includes="libtritonusvorbis.so" prefix="tritonus-vorbis-${version}"/>
+	</zip>
+</target>

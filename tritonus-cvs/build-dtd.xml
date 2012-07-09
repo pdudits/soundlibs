@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--DOCTYPE project SYSTEM "project.dtd"-->
+
+<!-- use this file to generate project.dtd -->
+<project name="dtd" default="dtd" basedir=".">
+
+  <target name="dtd"
+	  description="Generate project.dtd in the current directory. This file will contain a DTD for ant build files.">
+    <antstructure output="project.dtd" />
+  </target>
+
+</project>

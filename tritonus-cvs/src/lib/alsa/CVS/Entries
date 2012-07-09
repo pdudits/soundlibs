@@ -1,0 +1,25 @@
+D
+/.cvsignore/1.2/Sun Feb 11 16:40:20 2001//
+/Makefile.in/1.30/Sat Nov 08 19:50:38 2003//
+/common.h/1.10/Fri Dec 13 19:44:53 2002//
+/constants_check.h/1.5/Sat Aug 03 05:56:35 2002//
+/init.c/1.2/Sat Dec 14 17:15:46 2002//
+/org_tritonus_lowlevel_alsa_Alsa.c/1.6/Fri Dec 13 19:46:21 2002//
+/org_tritonus_lowlevel_alsa_AlsaCtl.c/1.4/Fri Dec 13 19:53:22 2002//
+/org_tritonus_lowlevel_alsa_AlsaCtlCardInfo.c/1.1/Fri Dec 13 19:53:23 2002//
+/org_tritonus_lowlevel_alsa_AlsaMixer.c/1.4/Fri Dec 13 19:53:23 2002//
+/org_tritonus_lowlevel_alsa_AlsaMixerElement.c/1.1/Fri Dec 13 19:53:23 2002//
+/org_tritonus_lowlevel_alsa_AlsaPcm.c/1.9/Mon Jan 05 11:18:08 2004//
+/org_tritonus_lowlevel_alsa_AlsaPcmHWParams.c/1.2/Mon Jan 05 11:18:08 2004//
+/org_tritonus_lowlevel_alsa_AlsaPcmHWParamsFormatMask.c/1.1/Thu Dec 19 21:44:53 2002//
+/org_tritonus_lowlevel_alsa_AlsaPcmSWParams.c/1.2/Mon Jan 05 11:18:08 2004//
+/org_tritonus_lowlevel_alsa_AlsaSeq.c/1.2/Sat Nov 08 19:50:38 2003//
+/org_tritonus_lowlevel_alsa_AlsaSeqClientInfo.c/1.1/Sat Dec 14 17:15:52 2002//
+/org_tritonus_lowlevel_alsa_AlsaSeqEvent.c/1.2/Sat Nov 08 19:50:38 2003//
+/org_tritonus_lowlevel_alsa_AlsaSeqPortInfo.c/1.1/Sat Dec 14 17:15:55 2002//
+/org_tritonus_lowlevel_alsa_AlsaSeqPortSubscribe.c/1.1/Sat Dec 14 17:15:56 2002//
+/org_tritonus_lowlevel_alsa_AlsaSeqQueueInfo.c/1.1/Sat Dec 14 17:15:58 2002//
+/org_tritonus_lowlevel_alsa_AlsaSeqQueueStatus.c/1.1/Sat Dec 14 17:15:59 2002//
+/org_tritonus_lowlevel_alsa_AlsaSeqQueueTempo.c/1.1/Sat Dec 14 17:16:01 2002//
+/org_tritonus_lowlevel_alsa_AlsaSeqRemoveEvents.c/1.1/Sat Dec 14 17:16:04 2002//
+/org_tritonus_lowlevel_alsa_AlsaSeqSystemInfo.c/1.1/Sat Dec 14 17:16:05 2002//

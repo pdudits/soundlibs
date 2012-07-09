@@ -1,0 +1,170 @@
+# compilation and packing of the native library for alsa
+#
+
+SHELL = /bin/sh
+
+prefix=@prefix@
+JAVADIR=$(prefix)
+REL_JAVAEXTLIBPATH=@REL_JAVAEXTLIBPATH@
+JAVAEXTLIBPATH=$(JAVADIR)/$(REL_JAVAEXTLIBPATH)
+OSNAME=@OSNAME@
+ARCHNAME=@ARCHNAME@
+CC=@CC@
+CPPFLAGS=-g -Wall -Werror -I$(JAVADIR)/include -I$(JAVADIR)/include/$(OSNAME) -fPIC -D_REENTRANT #-pedantic
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+LN_S=@LN_S@
+RM_F=@RM_F@
+MKDIR_P=@MKDIR_P@
+
+OBJDIR=../../../@BUILD_DIR@
+vpath %.class $(OBJDIR)/org/tritonus/lowlevel/alsa
+
+LIBBASENAME=libtritonusalsa
+LIBDEST=$(LIBBASENAME).so.1.0
+LIBDEST_ABSOLUTE=@SRC_ABSOLUTE_PATH@/src/lib/alsa/$(LIBDEST)
+#or LIBDEST_ABSOLUTE=$(CURDIR)/$(LIBDEST)
+
+# This is intended to be overridden. For instance:
+# export EXTRALIBS=-lefence; make -e
+EXTRALIBS=
+LIBS=-lasound $(EXTRALIBS)
+
+JAVAH = @JAVAH@
+
+
+JNIOBJ=\
+	org_tritonus_lowlevel_alsa_Alsa.o \
+	org_tritonus_lowlevel_alsa_AlsaCtl.o \
+	org_tritonus_lowlevel_alsa_AlsaCtlCardInfo.o \
+	org_tritonus_lowlevel_alsa_AlsaMixer.o \
+	org_tritonus_lowlevel_alsa_AlsaMixerElement.o \
+	org_tritonus_lowlevel_alsa_AlsaPcm.o \
+	org_tritonus_lowlevel_alsa_AlsaPcmHWParams.o \
+	org_tritonus_lowlevel_alsa_AlsaPcmHWParamsFormatMask.o \
+	org_tritonus_lowlevel_alsa_AlsaPcmSWParams.o \
+	org_tritonus_lowlevel_alsa_AlsaSeq.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqClientInfo.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqEvent.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqPortInfo.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqPortSubscribe.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqQueueInfo.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqQueueStatus.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqQueueTempo.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqRemoveEvents.o \
+	org_tritonus_lowlevel_alsa_AlsaSeqSystemInfo.o
+
+	#org_tritonus_lowlevel_alsa_AlsaSeqQueueTimer.o \
+
+OBJ=\
+	$(JNIOBJ) \
+	init.o \
+	../common/common.o
+
+
+
+JNIHEADERS:=$(JNIOBJ:.o=.h)
+
+JNICLASSFILES=\
+	Alsa.class \
+	AlsaCtl.class \
+	AlsaCtlCardInfo.class \
+	AlsaMixer.class \
+	AlsaMixerElement.class \
+	AlsaPcm.class \
+	AlsaPcmHWParams.class \
+	AlsaPcmHWParamsFormatMask.class \
+	AlsaPcmSWParams.class \
+	AlsaSeq.class \
+	AlsaSeqClientInfo.class \
+	AlsaSeqEvent.class \
+	AlsaSeqPortInfo.class \
+	AlsaSeqPortInfo.class \
+	AlsaSeqQueueInfo.class \
+	AlsaSeqQueueStatus.class \
+	AlsaSeqQueueTempo.class \
+	AlsaSeqRemoveEvents.class \
+	AlsaSeqSystemInfo.class
+
+	#AlsaSeqQueueTimer.class \
+
+
+JNICLASSES=\
+	org.tritonus.lowlevel.alsa.Alsa \
+	org.tritonus.lowlevel.alsa.AlsaCtl \
+	org.tritonus.lowlevel.alsa.AlsaCtlCardInfo \
+	org.tritonus.lowlevel.alsa.AlsaMixer \
+	org.tritonus.lowlevel.alsa.AlsaMixerElement \
+	org.tritonus.lowlevel.alsa.AlsaPcm \
+	org.tritonus.lowlevel.alsa.AlsaPcmHWParams \
+	org.tritonus.lowlevel.alsa.AlsaPcmHWParamsFormatMask \
+	org.tritonus.lowlevel.alsa.AlsaPcmSWParams \
+	org.tritonus.lowlevel.alsa.AlsaSeq \
+	org.tritonus.lowlevel.alsa.AlsaSeqClientInfo \
+	org.tritonus.lowlevel.alsa.AlsaSeqEvent \
+	org.tritonus.lowlevel.alsa.AlsaSeqPortInfo \
+	org.tritonus.lowlevel.alsa.AlsaSeqPortSubscribe \
+	org.tritonus.lowlevel.alsa.AlsaSeqQueueInfo \
+	org.tritonus.lowlevel.alsa.AlsaSeqQueueStatus \
+	org.tritonus.lowlevel.alsa.AlsaSeqQueueTempo \
+	org.tritonus.lowlevel.alsa.AlsaSeqRemoveEvents \
+	org.tritonus.lowlevel.alsa.AlsaSeqSystemInfo
+
+	#org.tritonus.lowlevel.alsa.AlsaSeqQueueTimer \
+
+#----------------- rules -------------------
+
+.PHONY: all
+all: $(LIBDEST)
+
+$(LIBDEST):	$(OBJ)
+	$(CC) -nostartfiles -shared -Wl,-soname,$(LIBBASENAME).so.1 -o $(LIBDEST) $(OBJ) -L/usr/lib $(LIBS)
+	$(RM_F) $(LIBBASENAME).so.1
+	$(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1
+	$(RM_F) $(LIBBASENAME).so
+	$(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so
+
+$(OBJ): $(JNIHEADERS)
+
+$(JNIHEADERS): $(JNICLASSFILES)
+	$(RM_F) $(JNIHEADERS)
+	$(JAVAH) -d . $(JNICLASSES)
+
+.PHONY: install
+install:
+	@echo "Installing $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	$(INSTALL_PROGRAM) $(LIBDEST) $(JAVAEXTLIBPATH)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: install-link
+install-link:
+	@echo "Creating links for $(LIBBASENAME) in $(JAVAEXTLIBPATH)"
+	@$(MKDIR_P) $(JAVAEXTLIBPATH)
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+	@(cd  $(JAVAEXTLIBPATH) && $(LN_S) $(LIBDEST_ABSOLUTE) $(LIBBASENAME).so.1.0)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1.0 $(LIBBASENAME).so.1)
+	@(cd $(JAVAEXTLIBPATH) && $(LN_S) $(LIBBASENAME).so.1 $(LIBBASENAME).so)
+
+.PHONY: uninstall
+uninstall:
+	@echo "Removing $(LIBBASENAME) from $(JAVAEXTLIBPATH)"
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1.0
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so.1
+	@$(RM_F) $(JAVAEXTLIBPATH)/$(LIBBASENAME).so
+
+.PHONY: uninstall-link
+uninstall-link: uninstall
+
+
+.PHONY: clean
+clean:
+	rm -rf $(LIBDEST) $(JNIHEADERS) *.o *~

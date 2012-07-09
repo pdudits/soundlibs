@@ -1,0 +1,34 @@
+/Aiff12bitAudioFileReaderTestCase.java/1.1/Mon Sep 15 04:53:09 2003//
+/AiffAudioFileReaderTestCase.java/1.2/Mon Jun 30 06:24:31 2003//
+/AlawFormatConversionProviderTestCase.java/1.1/Tue Jul 08 08:22:52 2003//
+/AuAudioFileReaderTestCase.java/1.2/Mon Jun 30 06:24:31 2003//
+/AuZeroDataLengthAudioFileReaderTestCase.java/1.2/Mon Jun 30 06:24:31 2003//
+/AudioInputStreamTestCase.java/1.2/Mon Feb 13 22:22:19 2006//
+/BaseAudioFileReaderTestCase.java/1.3/Mon Sep 15 04:52:28 2003//
+/BaseFormatConversionProviderTestCase.java/1.5/Mon Feb 13 22:22:19 2006//
+/BaseProviderTestCase.java/1.2/Mon Feb 13 22:22:19 2006//
+/ControlTestCase.java/1.1/Sun Jun 29 17:34:46 2003//
+/ControlTypeTestCase.java/1.2/Mon Feb 13 22:22:19 2006//
+/EncodingsTestCase.java/1.1/Tue Jul 08 18:15:18 2003//
+/GSMAudioFileReaderTestCase.java/1.2/Mon Jun 30 06:24:31 2003//
+/GSMFormatConversionProviderTestCase.java/1.1/Tue Jul 08 08:22:52 2003//
+/ImaAdpcmFormatConversionProviderTestCase.java/1.1/Wed Jul 09 18:23:57 2003//
+/JorbisFormatConversionProviderTestCase.java/1.1/Tue Jul 08 08:22:52 2003//
+/Mp3AudioFileReaderTestCase.java/1.2/Mon Jun 30 06:24:31 2003//
+/PCM2PCMConversionProviderTestCase.java/1.1/Tue Jul 08 08:22:52 2003//
+/SampleRateConversionProviderTestCase.java/1.1/Tue Jul 08 08:22:52 2003//
+/TAudioFileFormatTestCase.java/1.3/Mon Feb 13 22:22:19 2006//
+/TAudioFormatTestCase.java/1.2/Wed Feb 04 10:23:48 2004//
+/TAudioInputStreamTestCase.java/1.3/Mon Feb 13 22:22:19 2006//
+/TCircularBufferTestCase.java/1.2/Mon Jun 30 05:38:55 2003//
+/UlawFormatConversionProviderTestCase.java/1.1/Tue Jul 08 08:22:52 2003//
+/Util.java/1.2/Sat Nov 08 19:23:42 2003//
+/VorbisAudioFileReaderTestCase.java/1.2/Mon Jun 30 06:24:31 2003//
+/VorbisFormatConversionProviderTestCase.java/1.1/Tue Jul 01 20:18:36 2003//
+/VorbisSilenceTestCase.java/1.1/Sat Sep 27 22:19:30 2003//
+/VorbisTruncateTestCase.java/1.2/Sat Nov 22 14:03:16 2003//
+/WaveAudioFileReaderTestCase.java/1.2/Mon Jun 30 06:24:31 2003//
+D/alsa////
+D/api////
+D/sequencer////
+D/tritonus////

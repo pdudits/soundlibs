@@ -1,0 +1,61 @@
+Java files
+==========
+
+I suggest to rename the files and/or use new package names as follows.
+All java files reside in the directory .../tritonus/src/classes
+
+fluidsynth.FluidException ->
+[I see no necessity for this class and suggest to remove it]
+
+fluidsynth.Synth ->
+org.tritonus.midi.device.fluidsynth.FluidSynth
+
+fluidsynth.TMidiChannel ->
+org.tritonus.midi.file.fluidsynth.FluidMidiChannel
+[Note: may be reworked so that FluidMidiChannel and AlsaMidiChannel take advantage of a common base class
+org.tritonus.share.midi.device.TMidiChannel]
+
+(future new file) ->
+org.tritonus.midi.device.fluidsynth.FluidMidiDeviceProvider
+
+fluidsynth.FluidSoundbank ->
+org.tritonus.midi.sb.fluidsynth.FluidSoundbank
+
+(future new file) ->
+org.tritonus.midi.sb.fluidsynth.FluidSoundbankReader
+
+native files
+============
+
+- I suggest to not check in source code of the core fluidsynth distribution into the tritonus CVS. This is generally uncommon, and would raise synchronization problems. In general, I think a build should be possible with the compiled fluidsynth libraries and the public headers installed on a system.
+This is currently a problem because fluidsynt_jni.c uses two internal headers,
+fluid_midi.h and fluid_sfont.h. This is something that needs to be worked out.
+
+- Because I had linkage problems with fluidsynth_jni.cpp and fluidsynth_Synth.cpp, I changed them from C++ to C, renaming them to *.c and changing 'env->function(...' to '(*env)->function(env, ...'. Since this makes
+the code more portable and the benefits from using C++ here seem minimal
+anyway, I suggest to keep it this way.
+
+- One major limitation is that in fluidsynth_jni.c the native handle to the
+synthesizer is kept in a static variable. This makes it impossible to use
+more than one instance of the synthesizer at the same time. However, fixing this is not a big deal, we have a standard solution for this in Tritonus, and I want to get to code in the CVS first.
+
+- I do not see a compelling reason for splitting the code between the files fluidsynth_jni.c and fluidsynth_Synth.c. Since they have to be reworked anyway, we may decide to merge them.
+
+- build process: the usual build for native part of tritonus is with autoconf and makefiles. This is possible on Windows too, if the respective tools are installed. I'm not sure how familiar you (Henri) are with these tools. If you think you want the VC project files in the CVS, we can put them into the same directory as the (native) source files (.../tritonus/src/lib/fluidsynth), the root directory (.../tritonus) or something like ..../tritonus/winbuild. Please make up your mind and tell us about your opinion.
+
+file locations:
+
+fluidsynth_jni.h ->
+.../tritonus/src/lib/fluidsynth/fluidsynth_jni.h
+[Note: see the note above about merging]
+
+fluidsynth_jni.c ->
+.../tritonus/src/lib/fluidsynth/fluidsynth_jni.c
+[Note: see the note above about merging]
+
+fluidsynth_Synth.h ->
+.../tritonus/src/lib/fluidsynth/org_tritonus_midi_device_fluidsynth_FluidSynth.h
+[Note: In the tritonus build system, this file would be generated automatically. We need to check whether this fits into the Win build process.]
+
+fluidsynth_Synth.c ->
+.../tritonus/src/lib/fluidsynth/org_tritonus_midi_device_fluidsynth_FluidSynth.c

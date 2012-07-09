@@ -1,0 +1,6 @@
+
+behaviour of Sequencer.setMaster/SlaveSyncMode() if the passed mode is not allowed
+
+Synthesizer.getLatency() == -1 should be documented to be 'unknown'.
+
+Sequencer.setSequence() : if sequencer not opened, jdk1.3 throws IllegalStateException

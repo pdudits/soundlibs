@@ -1,0 +1,15 @@
+cdda/
+
+Classes that implement the high-level (URL based) interface to reading of audio CDs.
+
+convert/
+
+Classes derived from javax.sound.sampled.spi.FormatConversionProvider.
+
+file/
+
+Classes derived from javax.sound.sampled.spi.AudioFileReader or javax.sound.sampled.spi.AudioFileWriter.
+
+mixer/
+
+Classes that implement javax.sound.sampled.Mixer and classes derived from javax.sound.sampled.spi.MixerProvider.

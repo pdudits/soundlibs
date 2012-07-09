@@ -1,0 +1,379 @@
+Package org.tritonus.saol.sablecc;
+
+Helpers
+	all = [0 .. 127];
+	tab = 9;
+	lf = 10;
+	cr = 13;
+	digit = ['0' .. '9'];
+	nondigit = ['_' + [['a' .. 'z'] + ['A' .. 'Z']]];
+	s_char = [all - ['"' + ['\' + [cr + lf]]]];
+	s_char_sequence = s_char+;
+Tokens
+	aopcode = 'aopcode';
+	asig = 'asig';
+	else = 'else';
+	exports = 'exports';
+	extend = 'extend';
+	global = 'global';
+	if = 'if';
+	imports = 'imports';
+	inchannels = 'inchannels';
+	instr = 'instr';
+	interp = 'interp';
+	iopcode = 'iopcode';
+	ivar = 'ivar';
+	kopcode = 'kopcode';
+	krate = 'krate';
+	ksig = 'ksig';
+	map = 'map';
+	oparray = 'oparray';
+	opcode = 'opcode';
+	outbus = 'outbus';
+	outchannels = 'outchannels';
+	output = 'output';
+	preset = 'preset';
+	return = 'return';
+	route = 'route';
+	send = 'send';
+	sequence = 'sequence';
+	sasbf = 'sasbf';
+	spatialize = 'spatialize';
+	srate = 'srate';
+	table = 'table';
+	tablemap = 'tablemap';
+	template = 'template';
+	turnoff = 'turnoff';
+	while = 'while';
+	with = 'with';
+	xsig = 'xsig';
+	and = '&&';
+	or = '||';
+	gteq = '>=';
+	lteq = '<=';
+	neq = '!=';
+	eq = '==';
+	minus = '-';
+	mult = '*';
+	div = '/';
+	plus = '+';
+	gt = '>';
+	lt = '<';
+	quest_mark = '?';
+	colon = ':';
+	l_par = '(';
+	r_par = ')';
+	l_brace = '{';
+	r_brace = '}';
+	l_bracket = '[';
+	r_bracket = ']';
+	semicolon = ';';
+	comma = ',';
+	assign = '=';
+	excl_mark = '!';
+
+	comment = '/' '/' [all - [lf + cr]]* (lf | cr | cr lf);
+	string = '"' s_char_sequence '"';
+	identifier = nondigit (digit | nondigit)*;
+	integer = digit+;
+	number = digit+ ('.' digit*)?;
+	blank = (' ' | tab | cr | lf)+;
+
+Ignored Tokens
+	blank,
+	comment;
+
+Productions
+// -
+orcfile =
+	{orcfile} proc*;
+
+// -
+proc =
+	{instrdecl} instrdecl |
+	{opcodedecl} opcodedecl |
+	{globaldecl} globaldecl |
+	{templatedecl} templatedecl;
+
+// I
+instrdecl =
+	{instrdecl} instr identifier
+		l_par identlist? r_par
+		miditag?
+		l_brace vardecl* block r_brace;
+
+// I
+miditag =
+	{miditag} preset int_list;
+
+// I
+int_list =
+	{int_list} integer*;
+
+// O
+opcodedecl =
+	{opcodedecl} optype identifier l_par paramlist? r_par
+		l_brace opvardecl* block r_brace;
+
+// O
+optype =
+	{aopcode} aopcode |
+	{kopcode} kopcode |
+	{iopcode} iopcode |
+	{opcode} opcode;
+
+// O
+paramlist =
+	{paramlist} paramdecl paramlist_tail*;
+
+// O
+paramlist_tail =
+	{paramlist_tail} comma paramdecl;
+
+// O
+paramdecl =
+	{paramdecl} stype name;
+
+// G
+globaldecl =
+	{globaldecl} global l_brace globaldef* r_brace;
+
+// G
+globaldef =
+	{rtparam} rtparam |
+	{routedef} routedef|
+	{senddef} senddef |
+	{seqdef} seqdef |
+	{vardecl} vardecl;
+
+// G
+rtparam =
+	{srate} srate integer semicolon |
+	{krate} krate integer semicolon |
+	{inchannels} inchannels integer semicolon |
+	{outchannels} outchannels integer semicolon |
+	{interp} interp integer semicolon;
+
+// G
+routedef =
+	{routedef} route l_par identifier comma identlist? r_par semicolon;
+
+// G
+senddef =
+	{senddef} send l_par identifier [semicolon1]: semicolon exprlist? [semicolon2]: semicolon
+		identlist? r_par [semicolon3]: semicolon;
+
+// G
+seqdef =
+	{seqdef} sequence l_par identlist? r_par semicolon;
+
+// T
+templatedecl =
+	{templatedecl} template lt [identlist1]: identlist? gt
+		preset_clause?
+		l_par [identlist2]: identlist? r_par
+		map [l_brace1]: l_brace [identlist3]: identlist? [r_brace1]: r_brace
+		with [l_brace2]: l_brace mapblock? [r_brace2]: r_brace
+		[l_brace3]: l_brace vardecl* block [r_brace3]: r_brace;
+
+// T
+preset_clause =
+	{preset_clause} preset mapblock?;
+
+// T
+mapblock =
+	{mapblock} lt terminal_list gt mapblock_tail*;
+
+// T
+mapblock_tail =
+	{mapblock_tail} comma lt terminal_list gt;
+
+// T
+terminal_list =
+	{terminal_list} terminal terminal_list_tail*;
+
+// T
+terminal_list_tail =
+	{terminal_list_tail} comma terminal;
+
+// T
+terminal =
+	{identifier} identifier |
+	{constant} const |
+	{string} string;
+
+// IOT
+block =
+	{block} statement*;
+
+// IOT
+statement =
+	{assignment} lvalue assign expr semicolon |
+	{expression} expr semicolon |
+	{if} if l_par expr r_par l_brace block r_brace |
+	{if_else} if l_par expr r_par
+		[l_brace1]: l_brace [block1]: block [r_brace1]: r_brace
+		else [l_brace2]: l_brace [block2]: block [r_brace2]: r_brace |
+	{while} while l_par expr r_par l_brace block r_brace |
+	{instrument} instr identifier l_par exprlist? r_par semicolon |
+	{output} output l_par exprlist? r_par semicolon |
+	{spatialize} spatialize l_par exprlist? r_par semicolon |
+	{outbus} outbus l_par identifier comma exprlist? r_par semicolon |
+	{extend} extend l_par expr r_par semicolon |
+	{turnoff} turnoff semicolon |
+	{return} return l_par expr r_par semicolon;
+
+// IOT
+lvalue =
+	{simple} identifier |
+	{indexed} identifier l_bracket expr r_bracket;
+
+
+// IGT (-> IOGT)
+identlist =
+	{identlist} identifier identlist_tail*;
+
+// IGT (-> IOGT)
+identlist_tail =
+	{identlist_tail} comma identifier;
+
+
+// IGT (-> IOGT)
+vardecl =
+	{opvardecl} opvardecl |
+	{tablemap} tablemap identifier l_par identlist? r_par semicolon;
+
+// IOGT
+opvardecl =
+	{sigvar} taglist? stype namelist semicolon |
+	{tablevar} taglist table namelist semicolon |
+	{table} tabledecl semicolon;
+
+// IOGT
+taglist =
+	{imports} imports |
+	{exports} exports |
+	{importsexports} imports exports |
+	{exportsimports} exports imports;
+
+// IOGT
+stype =
+	{ivar} ivar |
+	{ksig} ksig |
+	{asig} asig |
+	{xsig} xsig |
+	{oparray} oparray;
+
+// IOGT
+tabledecl =
+	{tabledecl} table [identifier1]: identifier
+		l_par [identifier2]: identifier comma exprstrlist r_par;
+
+// IOGT
+namelist =
+	{namelist} name namelist_tail*;
+
+// IOGT
+namelist_tail =
+	{namelist_tail} comma name;
+
+// IOGT
+name =
+	{simple} identifier |
+	{indexed} identifier l_bracket integer r_bracket |
+	{inchannels} identifier l_bracket inchannels r_bracket |
+	{outchannels} identifier l_bracket outchannels r_bracket;
+
+// IOGT
+expr =
+	{orexpr} orexpr |
+	{alt} [orexpr1]: orexpr quest_mark [orexpr2]: orexpr colon [orexpr3]: orexpr;
+
+// IOGT
+orexpr =
+	{andexpr} andexpr |
+	{or} orexpr or andexpr;
+
+// IOGT
+andexpr =
+	{equalityexpr} equalityexpr |
+	{and} andexpr and equalityexpr;
+
+// IOGT
+equalityexpr =
+	{relationalexpr} relationalexpr |
+	{neq} equalityexpr neq relationalexpr |
+	{eq} equalityexpr eq relationalexpr;
+
+// IOGT
+relationalexpr =
+	{addexpr} addexpr |
+	{gt} relationalexpr gt addexpr |
+	{lt} relationalexpr lt addexpr |
+	{lteq} relationalexpr lteq addexpr |
+	{gteq} relationalexpr gteq addexpr;
+
+// IOGT
+addexpr =
+	{factor} factor |
+	{plus} addexpr plus factor |
+	{minus} addexpr minus factor;
+
+// IOGT
+factor =
+	{term} unaryminusterm |
+	{mult} factor mult unaryminusterm |
+	{div} factor div unaryminusterm;
+
+// IOGT
+unaryminusterm =
+	{term} notterm |
+	{not} minus notterm;
+
+// IOGT
+notterm =
+	{term} term |
+	{not} excl_mark term;
+
+
+// IOGT
+term =
+	{identifier} identifier |
+	{constant} const |
+	{indexed} identifier l_bracket expr r_bracket |
+	{sasbf} sasbf l_par exprlist? r_par |
+	{function} identifier l_par exprlist? r_par |
+	{indexedfunction} identifier l_bracket expr r_bracket
+		l_par exprlist? r_par |
+	{paren} l_par expr r_par;
+	
+
+// IOGT
+exprlist =
+	{exprlist} expr exprlist_tail*;
+
+// IOGT
+exprlist_tail =
+	{exprlist_tail} comma expr;
+
+
+// IOGT
+exprstrlist =
+	{exprstrlist} expr_or_string exprstrlist_tail*;
+
+// IOGT
+exprstrlist_tail =
+	{exprstrlist_tail} comma expr_or_string;
+
+
+// IOGT
+expr_or_string =
+	{expr} expr |
+	{string} string;
+
+// IOGT
+const =
+	{integer} integer |
+	{number} number;
+
+// end

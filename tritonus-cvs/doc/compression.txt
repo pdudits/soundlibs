@@ -1,0 +1,13 @@
+G.711: A-law, µ-qaw, 64 kbps
+G.721: ADPCM, 32 kbps
+G.722: 48/56/64 kbps
+G.723: ADPCM? 24/40 kbps
+G.723.1: ADPCM? 5.3/6.4 kbps
+G.728: hyprid/CELP, 16 kbps (computing intensive, only slightly better than GSM)
+G.729:
+
+H.261: video compression >= 64 kbps
+H.263: video compression < 64 kbps
+
+
+H.323: Multimedia conferencing over packet switched networks (video/audio conferencing). Often used for Voice over IP.

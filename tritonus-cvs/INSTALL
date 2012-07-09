@@ -1,0 +1,381 @@
+Installing instructions for Tritonus, version 0.3.1
+
+First: do you really need to build Tritonus yourself?
+For several common cases, this is not necessary. These cases are:
+- you want to do mp3 decoding (all platforms)
+- you want to do mp3 encoding (Linux i386, Windows)
+- you want to do GSM 06.10 decoding or encoding (all platforms)
+- you want to do ogg/vorbis decoding (all platforms)
+- you want to do CD digital audio extraction (Linux i386)
+For these cases, precompiled components are available. Go to:
+http://www.tritonus.org/plugins.html
+If you want to have kaffe with Java Sound, use the cvs of kaffe
+(Tritonus has been integrated there). Go to:
+http://www.kaffe.org/
+
+
+Which components do i need?
+[TODO: Which coponents to compile/install]
+
+
+
+What you need
+=============
+
+- jdk 1.5.x. Testing was done with the
+Sun jdk 1.5.0-b64. Other versions may work.
+If you want to compile Linux specific components, it is recommended to do
+it on a Linux system, so you need a j2sdk for Linux. Cross-compiling has not
+been tested.
+If you only want to build pure-java (not Linux specific) components, you
+can use a j2sdk on any platform.
+Tritonus does not work with jdk1.1.X.
+There are no experiences with gcj. Reports are welcome.
+
+- Optional: jikes (recommended, testing was done with version 1.16)
+
+- Either: the Enlightened Sound Daemon (esd or EsounD). On Debian
+systems, install the packages esound-common, esound, libesd0 and
+libesd0-dev. On Suse systems, install the package esound. If esd is
+not part of your Linux distribution, look at www.gnome.org. Make sure
+you have not only the daemon and the shared library, but also the header
+files for libesd.
+
+  NOTE: this is kept more or less as a compatibility option. Esd is
+  considered a badly designed program. Using ALSA is highly
+  recommended.
+
+- Or: ALSA 0.9.0rc2 or later or the corresponding cvs state. Get it
+from http://www.alsa-project.org/. It is recommended to use ALSA if
+you want to get high-performance, low-latency operation, or reliable
+full-duplex. It is a necessity if you want professional-grade MIDI support.
+Testing was done with ALSA 0.9.0rc2. 0.9.0rc3 has been reported to work.
+
+  STILL ANOTHER NOTE: currently, Tritonus' ALSA handling does not do
+  software mixing. This means that for normal JS operation (multiple
+  SourceDataLines/Clips) your soundcard has to support hardware
+  mixing. Common chipsets that do this are emu10k1 (SB Life!) and
+  Trident NX (e.g. Hoontech 4DWaveNX). Otherwise, you will get only
+  one line at a time. In other words: if your soundcard does not do hw
+  mixing, you need to choose the esd options to have multiple lines.
+
+
+For MIDI:
+- Either: ALSA (see above)
+
+- Or: MidiShare. Get it from http://www.grame.fr/MidiShare/.
+
+For cdda:
+- cdparanoia III version 9.8. Version 9.7 is not sufficient.
+
+For the build process:
+- make (Testing done with GNU make 3.79)
+- ant (Testing done with Apache Ant 1.6; 1.5 should work, too. 
+  Get it from http://jakarta.apache.org/ant/ if not present in your distribution)
+- gcc
+- libtool (currently not needed)
+- m4
+- cpp
+- javah (for building the native libraries)
+
+
+Building mp3 related components
+-------------------------------
+
+The ant based build requires that javalayer.jar is already compiled
+and that it is available in the classpath during the build. Only then
+the mp3 SPI plug-in gets compiled and packaged.
+
+
+Installing steps
+================
+
+---------------------
+Currently, the build process is a mess.
+I'm currently building with these commands:
+
+../tritonus> autoconf
+../tritonus> ./configure
+../tritonus> ant -f build-dtd.xml
+../tritonus> ant
+../tritonus> make -C src/lib/alsa
+../tritonus> make -C src/lib/vorbis
+../tritonus> make -C src/lib/...
+
+If you want ant to use jikes, issue:
+
+../tritonus> ant -Dbuild.compiler=jikes
+
+[IDEA: options to configure: build-prefix, install-prefix]
+
+Installation never worked really well. I did (by hand):
+> cd /usr/local/java/j2sdk1.4.0/jre/lib/ext
+> ln -s /home/matthias/java/tritonus/dist/tritonus_xxx.jar
+...
+> cd i386
+> ln -s /home/matthias/java/tritonus/src/lib/alsa/libtritonusalsa.so
+...
+(Of course adapt the paths to your system.)
+
+---------------------
+OLD
+
+1. Unpack the distribution. It should unpack into a directory
+tritonus-<version>. cd into the top-level directory.
+
+2. Issue 'configure' ('./configure' if you build as root) in the
+top-level directory. If you are building from the cvs, you have to
+create configure from configure.in by calling 'autoconf'. Note that
+autoconf 2.52 hat a bug that prevents Tritonus' configure from working
+correctely. Tested (and working) versions are 2.53 and 2.13.
+
+THE OLD WAY
+
+3. Issue 'make' or 'make compileinitial' (the second one is
+faster). There are spurious compilation errors with some jdk1.1
+versions. Just restart with 'make' (even if you originally said 'make
+compileinitial') and they will go away. This may be necessary several
+times.
+
+
+THE NEW WAY
+
+3. Issue 'ant'.
+
+-- following needs to be updated --
+
+4. Issue 'make install'. This will copy the files tritonus.jar,
+javalayer.jar, libesdtritonus.so.1.0 and libtritonusalsa.so.1.0 into
+the directory tree of the jdk, thereby installing it as an
+extension. Note that this works only if you have a jdk/jre1.2 or
+higher and java is accessible in the path. If you have jdk/jre1.1.x,
+you have to set the CLASSPATH and LD_LIBRARY_PATH to include the above
+files. The important files are:
+
+- tritonus-x.y.z/tritonus.jar - this contains the java classes and
+should be in your CLASSPATH
+
+- tritonus-x.y.z/javalayer.jar - this contains the java classes for
+the mp3 decoder (seperated because of legal reasons). They should be
+in your CLASSPATH, too.
+
+- tritonus-x.y.z/src/lib/alsa/libtritonusalsa.so.1.0 (if you use the
+MIDI stuff)
+
+- tritonus-x.y.z/src/lib/esd/libtritonusesd.so.1.0
+
+this contains the native 
+code and should be in your LD_LIBRARY_PATH
+
+
+USING TRITONUS WITH SUN/IBM/BLACKDOWN JDK 1.3/1.4
+
+If you are using Tritonus with a jdk/jre that already has an
+implementation of the Java Sound API (this is true for 1.3/1.4), you
+have two choices:
+
+1. Use only the components of Tritonus that are not available/not
+working correctely in the native Java Sound implementation.
+
+2. Completely replace the Java Sound implementation by Tritonus.
+
+Since 1.3 and 1.4 behave sligtly different with respect to this issue,
+there are even more pitfalls.
+
+If you just want to use one of Tritonus' FormatconversionProviders,
+MixerProviders or MidiDeviceProviders (these are the most common
+cases), put the respective tritonus_xxx.jar into either the user class
+path or the extension class path. Using the user class path can be
+convenient for quick tests. However, for permanent installation it is
+not recommanded. The reason is that executing a VM with 'java -jar
+...' overrides the user class path with the location of the .jar given
+on the command line. So Tritonus .jars put into the user class path
+become unavailable. Manipulating the boot class path is generally
+highly discouraged (see below for a useful, but still critical use of
+the boot class path). The remaining (and recommanded) way is to use
+the extension class path.
+
+Additionally, put native libs of .jar that need one into a generally
+system-accessible location (for instance /usr/lib/, /usr/local/lib,
+...). To install native libs in a custom location, you typically need
+to change the value of the environment variable LD_LIBRARY_PATH.
+
+This done, the components should be available to Java
+Sound. MixerProviders contribute to the list of Mixers
+(AudioSystem.getMixerInfo()). MidiDeviceProviders contribute to the
+list of MidiDevices
+(MidiSystem.getMidiDeviceInfo()). FormatConversionProviders are
+considered implicitely (by AudioSystem.getTargetEncodings(),
+AudioSystem.getTargetFormats(), AudioSystem.isConversionSupported(),
+AudioSystem.getAudioInputStream()).
+
+With jdk 1.3.X, the pitfall is that making the providers available does
+NOT automatically change the default devices (as returned/used by
+AudioSystem.getLine(), MidiSystem.getSynthesizer(),
+MidiSystem.getReceiver(), MidiSystem.getTransmitter(),
+MidiSystem.getSequencer(), MidiSystem.getSynthesizer()). The jdk
+searches the class paths for available providers in this order: boot
+class path, extension class path, user class path. Since the
+'built-in' providers appear in rt.jar, which appears in the boot class
+path, its devices act as defaults. Devices provided by
+additionally installed providers are available on explicit request
+(AudioSystem.getMixer(), MidiSystem.getMidiDevice()).
+
+With jdk 1.4, the defaults change without asking you, and exactely
+this can be a pitfal, too. This is due to the fact that the the search
+order for provider is reversed. Here, it is: user class path,
+extension class path, boot class path. So devices provided by
+additional providers can act as default devices.
+
+So with jdk1.4, your job is easy, while with jdk1.3 you have to
+explicitely name alternative Mixers and MidiDevices. Note that it is
+not a good idea to hard-code Tritonus' Mixer or MidiDevice names. The
+recommanded practice (anyway) is to give the user a list of available
+Mixers and MidiDevices and let her/him select an appropriate
+one. These choices may be stored as preferences. If the user doesn't
+explicitely select devices, default devices should be used (as
+provided by the Java Sound implementation, not hard-coded ones).
+
+You may want to opt to completely replace the jdk's Java Sound
+implementation by Tritonus. There are not many cases where this does
+make sense. It can be necessary to shadow severe bugs, but there are
+few of them. For now, it's mainly an option for testing Tritonus. It
+is not recommanded for normal users. Here is how it works:
+
+Since the native versions of the javax.sound.* classes are in the boot
+class path, it is necessary to alter the boot class path. Start the VM
+with the following options:
+
+java -Xbootclasspath/p:/path/to/tritonus_core.jar:/path/to/tritonus_share.jar
+
+This prepends some of the Tritonus .jars to the boot class path,
+resulting in Tritonus' versions of javax.sound.* shadowing the native
+ones. Note that this still does not remove the native service
+providers. To remove them, you have to edit or remove configuration
+files packaged in rt.jar. The easiest way is to just remove them. So,
+remove the following files from rt.jar:
+
+META-INF/services/javax.sound.midi.spi.MidiDeviceProvider
+META-INF/services/javax.sound.midi.spi.MidiFileReader
+META-INF/services/javax.sound.midi.spi.MidiFileWriter
+META-INF/services/javax.sound.midi.spi.SoundbankReader
+META-INF/services/javax.sound.sampled.spi.AudioFileReader
+META-INF/services/javax.sound.sampled.spi.AudioFileWriter
+META-INF/services/javax.sound.sampled.spi.FormatConversionProvider
+META-INF/services/javax.sound.sampled.spi.MixerProvider
+
+Be sure to keep a copy of the original rt.jar, so that you can easily
+restore the original state.
+
+And again: Be warned that this is a guru-level option. Don't dare to
+ask for help on a mailing list if something fails. You have to know
+what you are doing.
+
+
+TODO
+
+[table: which provider in which .jar]
+
+
+
+
+MISCELLANEOUS
+
+If you found bugs, have suggestions, want to contribute or whatever,
+you can contact the authors of this library:
+mailto:tritonus-devel@lists.sourceforge.net
+
+Further information on Tritonus:
+http://www.tritonus.org/
+
+You may also have a look at the Tritonus developer page:
+http://tritonus.sourceforge.net/developer.html
+
+Have fun!!
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Material not yet integrated (may be out of date)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+README.midi
+-----------
+
+ALSA
+----
+
+The MIDI stuff of tritonus makes heavy use of the ALSA sequencer.
+ALSA is the Advanced Linux Sound Architecture
+(http://www.alsa-project.org), a new soundcard driver system intended
+to replace the OSS/Free driver in future kernels.
+
+
+HOW TO MAKE IT WORK
+-------------------
+
+Use a recent 2.2 kernel. The developer of this stuff uses 2.2.10 and
+2.2.14 kernels; every kernel newer than 2.2.3 should work. In the
+kernel configuration, enable sound support, but do not include any
+concrete driver.  Enabling kernel symbol versioning helps if you
+recompile kernels frequently.
+
+Download and install the ALSA drivers/lib/utils version 0.5.x.
+You cannot use earlier versions of ALSA due to incompatible
+changes.  Be sure to configure '--with-sequencer=yes' in the driver
+part.  Install the modules and load the new versions.  Load the
+sequencer modules. For help on installing ALSA, see the alsa-user
+mailing list (visit the ALSA web site).
+
+
+Installation check
+------------------
+
+> cat /proc/asound/seq/clients
+The result should be similar to this:
+Client info
+  cur  clients : 2
+  peak clients : 2
+  max  clients : 192
+
+Client   0 : "System" [Kernel]
+  Port   0 : "Timer" (system:Rwe:Rwe)
+  Port   1 : "Announce" (system:R-e:R-e)
+Client  64 : "0: MIDI Synth" [Kernel]
+  Port   0 : "MIDI 0-0" (device:RWe:RWe)
+
+If the file doesn't exist at all, load the sequencer module:
+
+	modprobe snd-seq
+
+If the file exists, but the "MIDI Synth" doesn't show up, load the
+MIDI client module:
+
+	modprobe snd-seq-midi
+
+If the internal synthesizer of your card is supported (not all
+cards), you can load the synth support, too:
+
+	modprobe snd-seq-synth
+
+There may be additional lines if you have more than one soundcard,
+your soundcard has more than one MIDI port or the internal synth of
+the soundcard is supported.
+
+Second install check
+--------------------
+
+Install pmidi (http://www.parabola.demon.co.uk/alsa/pmidi.html).
+You need version 1.4.0 or later.
+Call 'pmidi -l'. The output should be similar to this:
+ Port     Client name                       Port name
+ 64:0     0: MIDI Synth                     MIDI 0-0
+
+Connect a synthesizer to the MIDI out of your computer.  Call 'pmidi
+-p 64:0 <midifile>'.  '64:0' should be the number shown in the first
+column of the output from 'pmidi -l'. The MIDI file should be played
+on your synth.
+
+(Hopefully) finished!
+---------------------
+
+Now you should be able to use Tritonus with the ALSA sequencer.

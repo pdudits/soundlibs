@@ -1,0 +1,244 @@
+doc/TODO-matthias.txt
+---------------------
+
+IDEAS
+-----
+
+- publish TConversionTool in some way. Binary? Packaged with example programs?
+- use speex (open source speech compression, http://speex.sourceforge.net/)
+- use FLAC (free lossless audio codec)?
+- check to shadow META-INF/services/javax.sound.* by means of prepending to boot class path.
+- remove midishare and mp3 stuff?
+- use libiiwusynth?
+- support ADPCM?
+- use TSE3 (portable sequencer engine written in C++)
+- support TSE3MDL file format?
+
+TODO (1 - important, 3 - nice to have)
+----
+
+general
+2 - use aspectj!!!
+3 - add "formatted for 80 cols" header to all files
+3 - check freetts/Tritonus interaction
+
+lowlevel, native
+2 - initialize all variables
+3 - use libtritonuscommon in all native libs
+3 - rename DEBUG to debug_flag for all native libs
+3 - separate static inner classes in all native/lowlevel classes
+3 - in src/lib/alsa, change constants_check.h to constants_check.c and include it into the object list of in Makefile.in. This is to isolate its effects.
+3 - change library building to using libtool
+3 - re-check ALSA seq constants (constants_check.h)
+
+documentation, distibution
+1 - some documentation "how to use Tritonus", explaining general options (precompiled, compile yourself from cvs)
+1 - make a note in INSTALL that for hand-installation only desired components should be installed. For automatic install, anyway. (see midishare exception)
+1 - binary dists: esd, alsa, SRC, AOS
+3 - cleanup web pages: contemporary doctype, weblint, ...
+3 - Separate into tritonus_midi_alsa.jar and tritonus_sampled_alsa.jar
+3 - review cdda distribution README
+
+misc
+1 - integrate ogg/vorbis
+1 - test suite for classes (not necessarily interfaces) in javax.sound
+1 - implement available() for lines
+1 - fix start()/stop()/active behaviour for lines
+2 - fix bug in AlsaMixer.readControlList()
+2 - rework sample rate converter
+3 - change provider search order to be exactely compatible with Sun
+
+
+
+TEST
+----
+
+javax.sound.midi
+
+Interfaces
+
+ControllerEventListener
+MetaEventListener
+MidiChannel
+MidiDevice
+Receiver
+Sequencer
+Soundbank
+Synthesizer
+Transmitter
+
+Classes
+
+Instrument
+MetaMessage
+MidiDevice.Info
+MidiEvent
+MidiFileFormat
+MidiMessage
+MidiSystem
+Patch
+Sequence
+Sequencer.SyncMode
+ShortMessage
+SoundbankResource
+SysexMessage
+Track
+VoiceStatus
+Exceptions 
+InvalidMidiDataException
+MidiUnavailableException
+
+
+javax.sound.midi.spi
+
+Classes
+
+MidiDeviceProvider
+MidiFileReader
+MidiFileWriter
+SoundbankReader
+
+
+javax.sound.sampled
+
+Interfaces
+
+Clip
+DataLine
+Line
+LineListener
+Mixer
+Port
+SourceDataLine
+TargetDataLine
+
+Classes
+
+AudioFileFormat
+AudioFileFormat.Type
+AudioFormat
+AudioFormat.Encoding
+AudioInputStream
+AudioPermission
+AudioSystem
+BooleanControl
+BooleanControl.Type
+CompoundControl
+CompoundControl.Type
+
+Control
+tested in ControlTestCase
+
+Control.Type
+tested in ControlTypeTestCase
+
+DataLine.Info
+
+EnumControl
+
+EnumControl.Type
+
+FloatControl
+
+FloatControl.Type
+
+Line.Info
+LineEvent
+LineEvent.Type
+Mixer.Info
+
+Port.Info
+
+ReverbType
+
+Exceptions 
+
+LineUnavailableException
+UnsupportedAudioFileException
+
+
+javax.sound.sampled.spi
+
+Classes
+
+AudioFileReader
+AudioFileWriter
+FormatConversionProvider
+MixerProvider
+
+-------------------------------------------------------------------
+
+SAOL
+----
+
+grammar:
+- tables (s/r conflict)
+- floats
+- associativity of '?'
+- make unicode-clean (but check if saol allows unicode chars in identifiers)
+
+
+Tests mit JSInfo, Converter Test
+================================
+Es wird immer über die Funktion AudioSystem.isConversionPossible(AudioFormat, AudioFormat) getestet.
+
+--------
+source format: PCM_SIGNED, 1 channel(s), 16 bit samples, 2 byte frames, 44100.0 Hz, 44100.0 frames/second, little endian
+target format: ALAW, 1 channel(s), 8 bit samples, 1 byte frames, 44100.0 Hz, 44100.0 frames/second, little endian
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.MpegFormatConversionProvider@ed1976dd
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.UlawFormatConversionProvider@f91976dd
+possible: true
+-
+possible solutions:
+- cancel alaw <-> ulaw completely (let smart converter do it)
+- seperate it into an own converter
+- derive Alaw-/UlawFCP from TMatrixFormatConversionProvider
+---
+source format: PCM_SIGNED, 1 channel(s), 8 bit samples, 1 byte frames, 48000.0 Hz, 48000.0 frames/second, little endian
+target format: PCM_SIGNED, 1 channel(s), 24 bit samples, 3 byte frames, 48000.0 Hz, 48000.0 frames/second, little endian
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.MpegFormatConversionProvider@ed1a7a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.UlawFormatConversionProvider@f91a7a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.AlawFormatConversionProvider@fdd27a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.PCM2PCMConversionProvider@fcae7a60
+possible: false
+-
+solution:
+In PCM2PCM FCP., add 24 and 32 bit formats to set of I/O formats passed to super class constructor
+additional suggestions:
+a) remove duplicate lines in OUTPUT_FORMATS
+b) rename OUTPUT_FORMATS to INOUT_FORMATS
+
+---
+source format: PCM_SIGNED, 1 channel(s), 8 bit samples, 1 byte frames, 44100.0 Hz, 44100.0 frames/second, little endian
+target format: PCM_SIGNED, 2 channel(s), 8 bit samples, 2 byte frames, 44100.0 Hz, 44100.0 frames/second, little endian
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.MpegFormatConversionProvider@ed1a7a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.UlawFormatConversionProvider@f91a7a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.AlawFormatConversionProvider@fdd27a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.PCM2PCMConversionProvider@fcae7a60
+possible: false
+-
+solution:
+?? (this is presumably a fundamental solution of TEncodingProvider)
+---
+source format: PCM_SIGNED, 2 channel(s), 16 bit samples, 4 byte frames, 44100.0 Hz, 44100.0 frames/second, little endian
+target format: PCM_UNSIGNED, 2 channel(s), 16 bit samples, 4 byte frames, 44100.0 Hz, 44100.0 frames/second, little endian
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.MpegFormatConversionProvider@ed1a7a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.UlawFormatConversionProvider@f91a7a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.AlawFormatConversionProvider@fdd27a60
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.PCM2PCMConversionProvider@fcae7a60
+possible: false
+-
+solution:
+discuss whether 16 bit unsigned is important
+---
+source format: PCM_SIGNED, 2 channel(s), 16 bit samples, 4 byte frames, 48000.0 Hz, 48000.0 frames/second, little endian
+target format: PCM_SIGNED, 2 channel(s), 16 bit samples, 4 byte frames, 44100.0 Hz, 44100.0 frames/second, little endian
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.MpegFormatConversionProvider@d06e6b3f
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.UlawFormatConversionProvider@c46e6b3f
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.AlawFormatConversionProvider@c1566b3f
+AudioSystem.doFormatConversionProviderIteration(): handling FormatConversionProvider: org.tritonus.sampled.convert.PCM2PCMConversionProvider@c0226b3f
+possible: false
+-
+solution:
+mal hinmachen!
+---

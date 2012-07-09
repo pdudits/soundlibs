@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!-- If a tool complains that project.dtd is not available,
+     run the following command:
+     ant -f build-dtd.xml
+-->
+<!DOCTYPE project SYSTEM "project.dtd" [
+<!ENTITY common SYSTEM "build-common.xml">
+]>
+
+<project name="tritonus" default="dist" basedir=".">
+
+
+  &common;
+
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="${src}"
+		   debug="${debug}"
+		   source="${source}"
+		   destdir="${build}"
+		   sourcepath="${src.classes}">
+	  <compilerarg compiler="kjc" value="-generic"/>
+	  <compilerarg  value="-Xlint:unchecked"/>
+      <include name="org/tritonus/" />
+      <exclude name="org/tritonus/sampled/cdda/" />
+      <!-- hack to enable building of mp3 decoder plug-in -->
+      <!--exclude name="org/tritonus/sampled/convert/javalayer/" /-->
+      <!--exclude name="org/tritonus/sampled/file/mpeg/" /-->
+      <exclude name="org/tritonus/midi/device/midishare/" />
+	  <!-- necessary for kaffe -->
+      <!--exclude name="org/tritonus/midi/device/java/SunMiscPerfClock.java" /-->
+    </javac>
+    <javac srcdir="${src.classes}"
+		   debug="${debug}"
+		   source="${source}"
+		   destdir="${build}" >
+	  <compilerarg compiler="kjc" value="-generic"/>
+	  <compilerarg  value="-Xlint:unchecked"/>
+      <include name="javax/sound/" />
+      <include name="org/tritonus/" />
+      <exclude name="org/tritonus/sampled/convert/jorbis/" />
+      <exclude name="org/tritonus/sampled/file/jorbis/" />
+      <exclude name="org/tritonus/saol/" />
+      <exclude name="org/tritonus/debug/" />
+	  <!-- necessary for kaffe -->
+      <!--exclude name="org/tritonus/midi/device/java/SunMiscPerfClock.java" /-->
+    </javac>
+  </target>
+
+
+  <target name="compile-javalayer-dependent"
+	  depends="prepare"
+	  if="javalayer-present">
+    <javac srcdir="${src}"
+		   debug="${debug}"
+		   source="${source}"
+		   destdir="${build}" >
+	  <compilerarg  value="-Xlint:unchecked"/>
+      <include name="org/tritonus/sampled/convert/javalayer/" />
+    </javac>
+  </target>
+
+
+  <target name="compile-jorbis-dependent"
+	  depends="prepare"
+	  if="jorbis-present">
+    <javac srcdir="${src.classes}"
+		   debug="${debug}"
+		   source="${source}"
+		   destdir="${build}" >
+	  <compilerarg  value="-Xlint:unchecked"/>
+      <include name="org/tritonus/sampled/convert/jorbis/" />
+      <include name="org/tritonus/sampled/file/jorbis/" />
+    </javac>
+  </target>
+
+  <target name="compile-midishare-dependent"
+	  depends="prepare"
+	  if="midishare-present">
+    <javac srcdir="${src}"
+		   debug="${debug}"
+		   source="${source}"
+		   destdir="${build}" >
+	  <compilerarg  value="-Xlint:unchecked"/>
+      <include name="org/tritonus/midi/device/midishare/" />
+    </javac>
+  </target>
+
+</project>

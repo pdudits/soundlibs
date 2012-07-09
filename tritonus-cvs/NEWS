@@ -1,0 +1,63 @@
+NEWS for Tritonus
+
+version 0.2.0:
+- bug fixes in audio file writers
+- improved A-law and u-law converters
+- bug fixes in installation procedure
+
+version 0.1.92:
+- file writers for .aiff and .wav
+- improved file readers
+- a-law and u-law converters
+- installation with jdk1.1.x now possible again
+
+version 0.1.91:
+- MIDI OUT is working (exception: sysex events)
+- major improvements in handling of 8-bit sound data
+
+version 0.1.90:
+many, many new things. Only key points here:
+- Java Sound API 1.0 interface
+- mp3 decoder fully integrated
+- recording works, even full-duplex
+- MIDI stuff: Sequencer (playback), Synthesizer (some advanced features missing), external MIDI IN, external MIDI OUT (only together with Sequencer)
+- NAS support removed
+
+version 0.1.82:
+- automatic configuration with configure
+- builds on jdk1.1.x (many thanks to Peter Pilgrim)
+- new base class TMixerProvider
+- NasMixer now has Mixer.Info object
+- interface of PanControl changed to 0.90 API
+- AudioInputStream can now handle streams with indefinite length
+- basis support for mp3 decoding by integration of javalayer
+- MidiDevice.Info.getVersion() added, constructor adapted
+- GroupLine added
+- Port.Info added
+
+version 0.1.81:
+- audio file writing for .au files
+- Clips for esd
+- several bugs fixed
+
+version 0.1.80:
+- JavaSound 0.90 API
+- support for esd
+- AudioInputStreamProviders for au, aiff and wave files
+
+
+version 0.1.003:
+- pause() and resume() are implemented
+- channels send start, stop and eom events
+- workaround for buggy fileparsers (now all work)
+
+version 0.1.002:
+- works with AuParser of Sun (other parser do not work/are not tested)
+- circular buffer in output channel has been eliminated
+- honors passed AudioFormat in Mixer.getOutputChannel()
+- Mixer.get*Formats() work
+
+Please report bugs to the author of this library:
+Matthias Pfisterer <Matthias.Pfisterer@gmx.de>
+
+Have fun!
