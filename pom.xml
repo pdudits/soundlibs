@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.googlecode.soundlibs</groupId>
+    <artifactId>soundlibs</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>soundlibs</name>
+    <url>https://code.google.com/p/soundlibs/</url>
+    <licenses>
+        <license>
+            <name>LGPL 2.1 license</name>
+            <url>http://www.opensource.org/licenses/lgpl-2.1.php</url>
+        </license>
+    </licenses>  
+    <modules>
+        <module>tritonus-share</module>
+    </modules>
+</project>
