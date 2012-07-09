@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>soundlibs</artifactId>
+        <groupId>com.googlecode.soundlibs</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>jlayer</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+    <name>JLayer</name>
+    <description>Maven artifact for JLayer library. http://www.javazoom.net/javalayer/sources.html</description>
+    <developers>
+        <developer>
+            <name>JavaZoom</name>
+            <email>jlayer@javazoom.net</email>
+            <organizationUrl>http://www.javazoom.net/javalayer/about.html</organizationUrl>
+            <roles>
+                <role>Original Author</role>
+            </roles>            
+            <url>http://www.javazoom.net/javalayer/javalayer.html</url>
+        </developer>
+    </developers>
+      
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src</directory>
+                <includes><include>**/*.ser</include></includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+    
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+        </dependency>
+    </dependencies>
+  
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+</project>
