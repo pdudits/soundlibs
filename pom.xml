@@ -17,5 +17,6 @@
         <module>tritonus-share</module>
         <module>jlayer</module>
         <module>mp3spi</module>
+        <module>jorbis</module>
     </modules>
 </project>
