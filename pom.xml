@@ -15,5 +15,7 @@
     </licenses>  
     <modules>
         <module>tritonus-share</module>
+        <module>jlayer</module>
+        <module>mp3spi</module>
     </modules>
 </project>
