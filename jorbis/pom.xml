@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>soundlibs</artifactId>
+        <groupId>com.googlecode.soundlibs</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>jorbis</artifactId>
+    <version>0.0.17-SNAPSHOT</version>
+    <name>JOrbis</name>
+    <description>Maven artifact for JOrbis library. http://www.jcraft.com/jorbis/</description>
+    <developers>
+        <developer>
+            <name>JCraft</name>
+            <organizationUrl>http://www.jcraft.com</organizationUrl>
+            <roles>
+                <role>Original Author</role>
+            </roles>            
+            <url>http://www.jcraft.com/contact.html</url>
+        </developer>
+    </developers>
+      
+    <build>
+        <sourceDirectory>com</sourceDirectory>
+    </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+</project>
