@@ -14,7 +14,8 @@
     <name>soundlibs: Open source java libraries repackaged</name>
 
     <description>Soundlibs provides mavenized version of java sound libraries as
-    Tritonus or JLayer</description>
+        Tritonus or JLayer
+    </description>
     
     <url>https://code.google.com/p/soundlibs/</url>
     <licenses>
@@ -31,7 +32,7 @@
             <roles>
                 <role>Packager</role>
             </roles>
-       </developer>
+        </developer>
     </developers>
     <scm>
         <connection>scm:hg:https://code.google.com/p/soundlibs</connection>
@@ -72,5 +73,21 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>            
+       </plugins>
     </build>
 </project>
