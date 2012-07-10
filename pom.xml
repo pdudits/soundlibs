@@ -8,7 +8,7 @@
     </parent>
     <groupId>com.googlecode.soundlibs</groupId>
     <artifactId>soundlibs</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>soundlibs: Open source java libraries repackaged</name>
@@ -38,7 +38,7 @@
         <connection>scm:hg:https://code.google.com/p/soundlibs</connection>
         <developerConnection>scm:hg:https://code.google.com/p/soundlibs</developerConnection>
         <url>https://code.google.com/p/soundlibs/</url>
-      <tag>soundlibs-1.1</tag>
+      <tag>HEAD</tag>
   </scm>    
     
     <modules>
