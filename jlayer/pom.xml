@@ -22,6 +22,14 @@
             </roles>            
             <url>http://www.javazoom.net/javalayer/javalayer.html</url>
         </developer>
+        <developer>
+            <name>Patrik Duditš</name>
+            <email>soundlibs@dudits.net</email>
+            <url>http://pato.dudits.net/</url>
+            <roles>
+                <role>Packager</role>
+            </roles>
+       </developer>        
     </developers>
       
     <build>

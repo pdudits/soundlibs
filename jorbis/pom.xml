@@ -21,13 +21,18 @@
             </roles>            
             <url>http://www.jcraft.com/contact.html</url>
         </developer>
+        <developer>
+            <name>Patrik Duditš</name>
+            <email>soundlibs@dudits.net</email>
+            <url>http://pato.dudits.net/</url>
+            <roles>
+                <role>Packager</role>
+            </roles>
+        </developer>        
     </developers>
       
     <build>
         <sourceDirectory>com</sourceDirectory>
     </build>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+        
 </project>

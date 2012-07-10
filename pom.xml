@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <groupId>com.googlecode.soundlibs</groupId>
     <artifactId>soundlibs</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>soundlibs</name>
+    
+    <name>soundlibs: Open source java libraries repackaged</name>
+
+    <description>Soundlibs provides mavenized version of java sound libraries as
+    Tritonus or JLayer</description>
+    
     <url>https://code.google.com/p/soundlibs/</url>
     <licenses>
         <license>
             <name>LGPL 2.1 license</name>
             <url>http://www.opensource.org/licenses/lgpl-2.1.php</url>
         </license>
-    </licenses>  
+    </licenses>
+    <developers>
+        <developer>
+            <name>Patrik Duditš</name>
+            <email>soundlibs@dudits.net</email>
+            <url>http://pato.dudits.net/</url>
+            <roles>
+                <role>Packager</role>
+            </roles>
+       </developer>
+    </developers>
+    <scm>
+        <connection>scm:hg:https://code.google.com/p/soundlibs</connection>
+        <developerConnection>scm:hg:https://code.google.com/p/soundlibs</developerConnection>
+        <url>https://code.google.com/p/soundlibs/</url>
+    </scm>    
+    
     <modules>
         <module>tritonus-share</module>
         <module>jlayer</module>

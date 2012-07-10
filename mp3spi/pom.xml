@@ -16,12 +16,21 @@
         <developer>
             <name>JavaZoom</name>
             <email>mp3spi@javazoom.net</email>
-            <organizationUrl>http://www.javazoom.net/javalayer/about.html</organizationUrl>
+            <organizationUrl>http://www.javazoom.net/mp3spi/about.html</organizationUrl>
             <roles>
                 <role>Original Author</role>
             </roles>            
-            <url>http://www.javazoom.net/javalayer/javalayer.html</url>
+            <url>http://www.javazoom.net/mp3spi/mp3spi.html</url>
         </developer>
+        <developer>
+            <name>Patrik Duditš</name>
+            <email>soundlibs@dudits.net</email>
+            <url>http://pato.dudits.net/</url>
+            <roles>
+                <role>Packager</role>
+            </roles>
+       </developer>
+        
     </developers>
       
     <build>
