@@ -87,6 +87,7 @@
                 <version>2.3.2</version>
                 <configuration>
                     <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
                 </configuration>                       
             </plugin>
             
