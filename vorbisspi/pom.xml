@@ -4,11 +4,11 @@
     <parent>
         <artifactId>soundlibs</artifactId>
         <groupId>com.googlecode.soundlibs</groupId>
-        <version>1.2</version>
+        <version>1.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>vorbisspi</artifactId>
-    <version>1.0.3-1</version>
+    <version>1.0.3-2-SNAPSHOT</version>
     <name>VorbisSPI</name>
     <description>Maven artifact for VorbisSPI library. http://www.javazoom.net/vorbisspi/vorbisspi.html</description>
     <developers>
@@ -46,12 +46,12 @@
         <dependency>
             <groupId>com.googlecode.soundlibs</groupId>
             <artifactId>jorbis</artifactId>
-            <version>0.0.17-2</version>
+            <version>0.0.17-3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.soundlibs</groupId>
             <artifactId>tritonus-share</artifactId>
-            <version>0.3.7-2</version>
+            <version>0.3.7-3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
