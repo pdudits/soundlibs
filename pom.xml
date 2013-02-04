@@ -46,8 +46,7 @@
         <module>jlayer</module>
         <module>mp3spi</module>
         <module>jorbis</module>
-        <!-- VorbisSPI does not build as it depends on ancient tritonus-share -->
-        <!--module>vorbisspi</module-->
+        <module>vorbisspi</module>
     </modules>
     <build>
         <pluginManagement>
