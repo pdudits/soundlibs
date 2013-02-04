@@ -33,6 +33,14 @@
                 <role>Packager</role>
             </roles>
         </developer>
+        <developer>
+            <name>Ralf Eichinger</name>
+            <email>ralf.eichinger@ralfeichinger.com</email>
+            <url>http://www.ralfeichinger.com/</url>
+            <roles>
+                <role>Packager</role>
+            </roles>
+        </developer>
     </developers>
     <scm>
         <connection>scm:hg:https://code.google.com/p/soundlibs</connection>
