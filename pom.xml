@@ -55,6 +55,7 @@
         <module>mp3spi</module>
         <module>jorbis</module>
         <module>vorbisspi</module>
+        <module>tritonus-all</module>
     </modules>
     <build>
         <pluginManagement>
