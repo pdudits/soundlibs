@@ -43,11 +43,11 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:hg:https://code.google.com/p/soundlibs</connection>
-        <developerConnection>scm:hg:https://code.google.com/p/soundlibs</developerConnection>
-        <url>https://code.google.com/p/soundlibs/</url>
-      <tag>HEAD</tag>
-  </scm>    
+        <url>https://github.com/pdudits/soundlibs</url>
+        <connection>scm:git:https://github.com/pdudits/soundlibs.git</connection>
+        <developerConnection>scm:git:https://github.com/pdudits/soundlibs.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
     
     <modules>
         <module>tritonus-share</module>
