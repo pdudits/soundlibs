@@ -113,7 +113,7 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 			if(mixer==null) {
 				line = AudioSystem.getLine(getSourceLineInfo());
 			} else {
-				line = AudioSystem.getSourceDataLine(fmt, mixer);
+				line = AudioSystem.getSourceDataLine(getAudioFormat(), mixer);
 			}
 			if (line instanceof SourceDataLine)
 			{
