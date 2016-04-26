@@ -87,6 +87,10 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 		return info;
 	}
 
+	protected Line getLine() throws LineUnavailableException {
+		return AudioSystem.getLine(getSourceLineInfo());
+	}
+
 	public void open(AudioFormat fmt) throws JavaLayerException
 	{
 		if (!isOpen())
