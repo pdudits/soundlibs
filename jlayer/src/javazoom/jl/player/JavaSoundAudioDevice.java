@@ -30,7 +30,6 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.Mixer;
 
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;
@@ -49,16 +48,6 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 	private AudioFormat		fmt = null;
 
 	private byte[]			byteBuf = new byte[4096];
-
-	private Mixer.Info		mixer = null;
-
-	public JavaSoundAudioDevice() {
-
-	}
-
-	public JavaSoundAudioDevice(Mixer.Info mixer0) {
-		mixer = mixer0;
-	}
 
 	protected void setAudioFormat(AudioFormat fmt0)
 	{
