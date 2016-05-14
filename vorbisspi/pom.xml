@@ -9,6 +9,7 @@
 
     <artifactId>vorbisspi</artifactId>
     <version>1.0.3-2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
     <name>VorbisSPI</name>
     <description>Maven artifact for VorbisSPI library. http://www.javazoom.net/vorbisspi/vorbisspi.html</description>
     <developers>
