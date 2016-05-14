@@ -42,6 +42,18 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <SPI-Provider>javax.sound.sampled.AudioSystem</SPI-Provider>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
     
     <dependencies>
