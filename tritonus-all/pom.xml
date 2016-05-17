@@ -7,6 +7,7 @@
         <version>1.3-SNAPSHOT</version>
     </parent>
     <artifactId>tritonus-all</artifactId>
+    <packaging>bundle</packaging>
     <version>0.3.7-1-SNAPSHOT</version>
     <name>tritonus-all</name>
     <description>Complete tritonus package with all plugins</description>
