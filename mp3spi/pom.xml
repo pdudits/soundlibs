@@ -9,6 +9,7 @@
 
     <artifactId>mp3spi</artifactId>
     <version>1.9.5-2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
     <name>MP3SPI</name>
     <description>Maven artifact for MP3SPI library. http://www.javazoom.net/mp3spi/mp3spi.html</description>
     <developers>
@@ -41,6 +42,18 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <SPI-Provider>javax.sound.sampled.AudioSystem</SPI-Provider>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
     
     <dependencies>

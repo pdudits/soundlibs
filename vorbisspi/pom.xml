@@ -9,6 +9,7 @@
 
     <artifactId>vorbisspi</artifactId>
     <version>1.0.3-2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
     <name>VorbisSPI</name>
     <description>Maven artifact for VorbisSPI library. http://www.javazoom.net/vorbisspi/vorbisspi.html</description>
     <developers>
@@ -34,6 +35,18 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <SPI-Provider>javax.sound.sampled.AudioSystem</SPI-Provider>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>

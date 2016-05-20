@@ -1,0 +1,25 @@
+/ControllerEventListener.java/1.1/Sun Jan 16 08:24:50 2005//
+/Instrument.java/1.1/Sun Jan 16 08:25:03 2005//
+/InvalidMidiDataException.java/1.1/Sun Jan 16 08:25:03 2005//
+/MetaEventListener.java/1.1/Sun Jan 16 08:25:03 2005//
+/MetaMessage.java/1.3/Mon Feb 13 17:40:03 2006//
+/MidiChannel.java/1.1/Sun Jan 16 08:25:03 2005//
+/MidiDevice.java/1.1/Sun Jan 16 08:25:03 2005//
+/MidiEvent.java/1.1/Sun Jan 16 08:25:03 2005//
+/MidiFileFormat.java/1.1/Sun Jan 16 08:25:03 2005//
+/MidiMessage.java/1.1/Sun Jan 16 08:25:03 2005//
+/MidiSystem.java/1.2/Mon Feb 13 12:21:48 2006//
+/MidiUnavailableException.java/1.1/Sun Jan 16 08:25:03 2005//
+/Patch.java/1.1/Sun Jan 16 08:25:03 2005//
+/Receiver.java/1.1/Sun Jan 16 08:25:03 2005//
+/Sequence.java/1.2/Mon Feb 13 13:25:23 2006//
+/Sequencer.java/1.1/Sun Jan 16 08:25:03 2005//
+/ShortMessage.java/1.1/Sun Jan 16 08:25:03 2005//
+/Soundbank.java/1.1/Sun Jan 16 08:25:03 2005//
+/SoundbankResource.java/1.1/Sun Jan 16 08:25:03 2005//
+/Synthesizer.java/1.1/Sun Jan 16 08:25:03 2005//
+/SysexMessage.java/1.1/Sun Jan 16 08:25:03 2005//
+/Track.java/1.1/Sun Jan 16 08:25:03 2005//
+/Transmitter.java/1.1/Sun Jan 16 08:25:03 2005//
+/VoiceStatus.java/1.1/Sun Jan 16 08:25:03 2005//
+D/spi////

@@ -135,7 +135,12 @@ public class Service
 		Enumeration	configs = null;
 		try
 		{
-			configs = ClassLoader.getSystemResources(strFullName);
+			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+			if (ccl != null) {
+				configs = ccl.getResources(strFullName);
+			} else {
+				configs = ClassLoader.getSystemResources(strFullName);
+			}
 		}
 		catch (IOException e)
 		{
