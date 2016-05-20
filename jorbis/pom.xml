@@ -4,11 +4,11 @@
     <parent>
         <artifactId>soundlibs</artifactId>
         <groupId>com.googlecode.soundlibs</groupId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3</version>
     </parent>
 
     <artifactId>jorbis</artifactId>
-    <version>0.0.17-3-SNAPSHOT</version>
+    <version>0.0.17-3</version>
     <packaging>bundle</packaging>
     <name>JOrbis</name>
     <description>Maven artifact for JOrbis library. http://www.jcraft.com/jorbis/</description>

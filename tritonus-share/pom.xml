@@ -4,11 +4,11 @@
     <parent>
         <artifactId>soundlibs</artifactId>
         <groupId>com.googlecode.soundlibs</groupId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3</version>
     </parent>
 
     <artifactId>tritonus-share</artifactId>
-    <version>0.3.7-3-SNAPSHOT</version>
+    <version>0.3.7-3</version>
     <packaging>bundle</packaging>
     <name>tritonus-share</name>
     <description>Maven artifact for tritonus-share library of tritonus.org</description>

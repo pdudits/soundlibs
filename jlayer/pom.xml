@@ -4,11 +4,11 @@
     <parent>
         <artifactId>soundlibs</artifactId>
         <groupId>com.googlecode.soundlibs</groupId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3</version>
     </parent>
 
     <artifactId>jlayer</artifactId>
-    <version>1.0.1-2-SNAPSHOT</version>
+    <version>1.0.1-2</version>
     <packaging>bundle</packaging>
     <name>JLayer</name>
     <description>Maven artifact for JLayer library. http://www.javazoom.net/javalayer/sources.html</description>
