@@ -98,7 +98,7 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
         Throwable t = null;
         try
         {
-			Line line = AudioSystem.getLine(getSourceLineInfo());
+			Line line = createLine();
             if (line instanceof SourceDataLine)
             {
          		source = (SourceDataLine)line;
@@ -126,6 +126,11 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
               t = ex;
           }
 		if (source==null) throw new JavaLayerException("cannot obtain source audio line", t);
+    }
+
+    protected Line createLine() throws LineUnavailableException {
+        Line line = AudioSystem.getLine(getSourceLineInfo());
+        return line;
     }
 
 	public int millisecondsToBytes(AudioFormat fmt, int time)
