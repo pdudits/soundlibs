@@ -78,6 +78,7 @@
                             <link>http://wiki.soundlibs.googlecode.com/hg/mp3spi/apidocs</link>
                             <link>http://wiki.soundlibs.googlecode.com/hg/jorbis/apidocs</link>
                         </links>
+                        <additionalparam>-Xdoclint:none</additionalparam>
                     </configuration>
                 </plugin>
                 <plugin>
