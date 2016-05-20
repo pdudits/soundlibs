@@ -13,35 +13,49 @@ Following artifacts are released including source and javadoc artifacts:
 
 Add any of these dependencies to your project:
 
-[code,xmml]
+[code,xml]
 ----
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>tritonus-share</artifactId>
-  <version>0.3.7-2</version>
+  <version>0.3.7-3</version>
+</dependency>
+
+<dependency>
+  <groupId>com.googlecode.soundlibs</groupId>
+  <artifactId>tritonus-all</artifactId>
+  <version>0.3.7-1</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>jlayer</artifactId>
-  <version>1.0.1-1</version>
+  <version>1.0.1-2</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>mp3spi</artifactId>
-  <version>1.9.5-1</version>
+  <version>1.9.5-2</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>jorbis</artifactId>
-  <version>0.0.17-2</version>
+  <version>0.0.17-3</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>vorbisspi</artifactId>
-  <version>1.0.3-1</version>
+  <version>1.0.3-2</version>
 </dependency>
 ----
+
+== Changes
+
+=== soundlibs 1.3
+
+* Added OSGi support
+* Added tritonus-all with all non-native code of tritonus
+* Support input configuration in javazoom player
