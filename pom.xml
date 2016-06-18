@@ -56,6 +56,7 @@
         <module>jorbis</module>
         <module>vorbisspi</module>
         <module>tritonus-all</module>
+        <module>basicplayer</module>
     </modules>
     <build>
         <pluginManagement>

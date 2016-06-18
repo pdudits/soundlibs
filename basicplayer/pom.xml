@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>soundlibs</artifactId>
+    <groupId>com.googlecode.soundlibs</groupId>
+    <version>1.4-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>basicplayer</artifactId>
+  <version>3.0.0-1-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  <name>BasicPlayer</name>
+  <description>Maven artifact for BasicPlayer API. http://www.javazoom.net/jlgui/api.html</description>
+  <developers>
+    <developer>
+      <name>JavaZoom</name>
+      <email>jlgui@javazoom.net</email>
+      <organizationUrl>http://www.javazoom.net/jlgui/jlgui.html</organizationUrl>
+      <roles>
+        <role>Original Author</role>
+      </roles>
+      <url>http://www.javazoom.net/jlgui/api.html</url>
+    </developer>
+    <developer>
+      <name>Elliot Huntington</name>
+      <email>elliot.huntington@gmail.com</email>
+      <roles>
+        <role>Packager</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.googlecode.soundlibs</groupId>
+      <artifactId>mp3spi</artifactId>
+      <version>1.9.5-3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.soundlibs</groupId>
+      <artifactId>tritonus-share</artifactId>
+      <version>0.3.7-3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.12</version>
+    </dependency>
+
+  </dependencies>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

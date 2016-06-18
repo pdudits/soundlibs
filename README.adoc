@@ -7,7 +7,8 @@ Following artifacts are released including source and javadoc artifacts:
   * http://www.javazoom.net/javalayer/javalayer.html[JLayer] - MP3 decoder and  encoder 
   * http://www.javazoom.net/mp3spi/mp3spi.html[MP3SPI] - javax.sound provider for MP3 decoding and encoding based on JLayer
   * http://www.jcraft.com/jorbis/[JOrbis] - OGG Vorbis decoder and encoder
-  * http://www.javazoom.net/vorbisspi/vorbisspi.html[VorbisSPI] Service provider for decoding OGG Vorbis
+  * http://www.javazoom.net/vorbisspi/vorbisspi.html[VorbisSPI] - Service provider for decoding OGG Vorbis
+  * http://www.javazoom.net/jlgui/api.html[BasicPlayer] - BasicPlayer layer is the simple player API of jlGui. These classes are designed to be used in any application that needs simple features (play, stop, pause, resume, seek) to play audio file or stream. It's a high-level API over JavaSound API.
 
 == How to use
 
@@ -50,9 +51,20 @@ Add any of these dependencies to your project:
   <artifactId>vorbisspi</artifactId>
   <version>1.0.3-2</version>
 </dependency>
+
+<dependency>
+  <groupId>com.googlecode.soundlibs</groupId>
+  <artifactId>basicplayer</artifactId>
+  <version>3.0.0-1</version>
+</dependency>
 ----
 
 == Changes
+
+=== soundlibs 1.4
+
+* Added BasicPlayer module
+* mp3spi exports javazoom.spi package
 
 === soundlibs 1.3
 
