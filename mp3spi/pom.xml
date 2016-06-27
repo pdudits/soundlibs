@@ -50,7 +50,6 @@
                 <configuration>
                     <instructions>
                         <SPI-Provider>javax.sound.sampled.AudioSystem</SPI-Provider>
-                        <Export-Package>javazoom.spi</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
