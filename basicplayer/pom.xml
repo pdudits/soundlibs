@@ -42,7 +42,7 @@
     <dependency>
       <groupId>com.googlecode.soundlibs</groupId>
       <artifactId>tritonus-share</artifactId>
-      <version>0.3.7-3</version>
+      <version>0.3.7-4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
