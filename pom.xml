@@ -89,6 +89,16 @@
                     <inherited>true</inherited>
                     <extensions>true</extensions>
                 </plugin>
+                <plugin>
+                    <groupId>com.github.danielflower.mavenplugins</groupId>
+                    <artifactId>multi-module-maven-release-plugin</artifactId>
+                    <version>2.0.3</version>
+                    <configuration>
+                        <releaseGoals>
+                            <releaseGoal>deploy</releaseGoal>
+                        </releaseGoals>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
