@@ -8,7 +8,7 @@
     </parent>
     <groupId>com.googlecode.soundlibs</groupId>
     <artifactId>soundlibs</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>soundlibs: Open source java libraries repackaged</name>
