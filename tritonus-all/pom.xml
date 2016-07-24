@@ -8,7 +8,7 @@
     </parent>
     <artifactId>tritonus-all</artifactId>
     <packaging>bundle</packaging>
-    <version>0.3.7-2-SNAPSHOT</version>
+    <version>0.3.7-SNAPSHOT</version>
     <name>tritonus-all</name>
     <description>Complete tritonus package with all plugins</description>
     

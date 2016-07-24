@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>mp3spi</artifactId>
-    <version>1.9.5-3-SNAPSHOT</version>
+    <version>1.9.5-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>MP3SPI</name>
     <description>Maven artifact for MP3SPI library. http://www.javazoom.net/mp3spi/mp3spi.html</description>

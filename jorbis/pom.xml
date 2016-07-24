@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>jorbis</artifactId>
-    <version>0.0.17-4-SNAPSHOT</version>
+    <version>0.0.17-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>JOrbis</name>
     <description>Maven artifact for JOrbis library. http://www.jcraft.com/jorbis/</description>

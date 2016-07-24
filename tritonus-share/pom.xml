@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>tritonus-share</artifactId>
-    <version>0.3.7-4-SNAPSHOT</version>
+    <version>0.3.7-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>tritonus-share</name>
     <description>Maven artifact for tritonus-share library of tritonus.org</description>

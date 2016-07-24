@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>basicplayer</artifactId>
-  <version>3.0.0-1-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>BasicPlayer</name>
   <description>Maven artifact for BasicPlayer API. http://www.javazoom.net/jlgui/api.html</description>
