@@ -95,7 +95,9 @@
                     <version>2.0.4</version>
                     <configuration>
                         <releaseGoals>
-                            <releaseGoal>deploy</releaseGoal>
+                            <releaseGoal>clean</releaseGoal>
+                            <releaseGoal>install</releaseGoal>
+<!--                            <releaseGoal>deploy</releaseGoal>-->
                         </releaseGoals>
                     </configuration>
                 </plugin>
