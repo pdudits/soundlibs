@@ -93,15 +93,18 @@
                     <groupId>com.github.danielflower.mavenplugins</groupId>
                     <artifactId>multi-module-maven-release-plugin</artifactId>
                     <version>2.0-SNAPSHOT</version>
+                    <!-- Using SNAPSHOT for this release, as I applied pull requests #34 and #35.
+                    https://github.com/danielflower/multi-module-maven-release-plugin/pulls?q=is%3Apr%20author%3Apdudits
+                    -->
                     <configuration>
                         <releaseGoals>
                             <releaseGoal>clean</releaseGoal>
-                            <releaseGoal>install</releaseGoal>
-<!--                            <releaseGoal>deploy</releaseGoal>-->
+                            <releaseGoal>deploy</releaseGoal>
                         </releaseGoals>
                         <releaseProfiles>
                             <releaseProfile>release-profile</releaseProfile>
                         </releaseProfiles>
+                        <pushTags>false</pushTags>
                     </configuration>
                 </plugin>
             </plugins>
