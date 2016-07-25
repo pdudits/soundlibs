@@ -19,43 +19,43 @@ Add any of these dependencies to your project:
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>tritonus-share</artifactId>
-  <version>0.3.7-3</version>
+  <version>0.3.7.4</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>tritonus-all</artifactId>
-  <version>0.3.7-1</version>
+  <version>0.3.7.2</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>jlayer</artifactId>
-  <version>1.0.1-2</version>
+  <version>1.0.1.3</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>mp3spi</artifactId>
-  <version>1.9.5-2</version>
+  <version>1.9.5.3</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>jorbis</artifactId>
-  <version>0.0.17-3</version>
+  <version>0.0.17.4</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>vorbisspi</artifactId>
-  <version>1.0.3-2</version>
+  <version>1.0.3.3</version>
 </dependency>
 
 <dependency>
   <groupId>com.googlecode.soundlibs</groupId>
   <artifactId>basicplayer</artifactId>
-  <version>3.0.0-1</version>
+  <version>3.0.0.0</version>
 </dependency>
 ----
 
@@ -63,8 +63,12 @@ Add any of these dependencies to your project:
 
 === soundlibs 1.4
 
+* Released with https://github.com/danielflower/multi-module-maven-release-plugin[multimodule-release-plugin]
 * Added BasicPlayer module
 * mp3spi exports javazoom.spi package
+
+Due to new release process all modules have are re-released with new version number. Packaging versions are no longer
+separated with a dash, rather with a dot.
 
 === soundlibs 1.3
 
