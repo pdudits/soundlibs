@@ -99,6 +99,9 @@
                             <releaseGoal>install</releaseGoal>
 <!--                            <releaseGoal>deploy</releaseGoal>-->
                         </releaseGoals>
+                        <releaseProfiles>
+                            <releaseProfile>release-profile</releaseProfile>
+                        </releaseProfiles>
                     </configuration>
                 </plugin>
             </plugins>
