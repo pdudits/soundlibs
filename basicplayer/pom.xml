@@ -37,12 +37,12 @@
     <dependency>
       <groupId>com.googlecode.soundlibs</groupId>
       <artifactId>mp3spi</artifactId>
-      <version>1.9.5-3-SNAPSHOT</version>
+      <version>1.9.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.googlecode.soundlibs</groupId>
       <artifactId>tritonus-share</artifactId>
-      <version>0.3.7-4-SNAPSHOT</version>
+      <version>0.3.7-SNAPSHOT</version>
     </dependency>
 
     <dependency>
