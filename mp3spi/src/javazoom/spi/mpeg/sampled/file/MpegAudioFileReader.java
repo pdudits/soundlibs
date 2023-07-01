@@ -700,7 +700,7 @@ public class MpegAudioFileReader extends TAudioFileReader
                 {
                     // ID3v2.3 & ID3v2.4
                     String code = new String(bframes, i, 4);
-                    size = (int) ((bframes[i + 4] << 24) & 0xFF000000 | (bframes[i + 5] << 16) & 0x00FF0000 | (bframes[i + 6] << 8) & 0x0000FF00 | (bframes[i + 7]) & 0x000000FF);
+                    size = extractSyncsafeInteger(bframes, i);
                     i += 10;
                     if ((code.equals("TALB")) || (code.equals("TIT2")) || (code.equals("TYER")) ||
                         (code.equals("TPE1")) || (code.equals("TCOP")) || (code.equals("COMM")) ||
@@ -775,6 +775,10 @@ public class MpegAudioFileReader extends TAudioFileReader
             if (TDebug.TraceAudioFileReader) TDebug.out("Cannot parse ID3v2 :" + e.getMessage());
         }
         if (TDebug.TraceAudioFileReader) TDebug.out("ID3v2 parsed");
+    }
+
+    private int extractSyncsafeInteger(final byte[] bframes, final int i) {
+        return (bframes[i + 4] & 0x7f) << 21 | (bframes[i + 5] & 0x7f) << 14 | (bframes[i + 6] & 0x7f) << 7 | (bframes[i + 7]) & 0x7f;
     }
 
     /**
